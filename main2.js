@@ -742,20 +742,12 @@ window.onkeydown = (e)=>{
     switch(e.key){
         case 'Control':
             otherKeys.ctrl = true
-            break
-        case 'Command':
-            otherKeys.ctrl = true
-            break
     }
 }
 window.onkeyup = (e)=>{
     switch(e.key){
         case 'Control':
             otherKeys.ctrl = false
-            break
-        case 'Command':
-            otherKeys.ctrl = false
-            break
     }
 }
 canvas.onmousedown = (e)=>{
