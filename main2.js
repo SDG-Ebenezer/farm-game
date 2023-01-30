@@ -655,8 +655,8 @@ var bsBtnX = canvas.width - iconSize - bsBtnW
 var bsBtnY = canvas.height - bsBtnH
 function bsBtn(){
     let img = document.createElement('img')
-    if(sellNBuy) img.src = 'C:/Users/User/Desktop/FarmGame/Pictures/buy.png'
-    else if(sellNBuy == false) img.src = 'C:/Users/User/Desktop/FarmGame/Pictures/sell.png'
+    if(sellNBuy) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/buy.png'
+    else if(sellNBuy == false) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/sell.png'
     ctx.drawImage(img, bsBtnX, bsBtnY)
 }
 
