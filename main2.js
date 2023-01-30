@@ -866,7 +866,7 @@ canvas.onmousedown = (e)=>{
                         && e.y >= btn.y && e.y <= btn.y + btn.h 
                         && btn.btnID.qty > 0 && parseInt(quantity) != 0){
                             if(parseInt(quantity) <= btn.btnID.qty){
-                                money += btn.btnID.qty * parseInt(quantity) ?? 1
+                                money += btn.btnID.profit * parseInt(quantity) ?? 1
                                 btn.btnID.qty -= parseInt(quantity) ?? 1
                             }
                     }
