@@ -280,7 +280,7 @@ function drawLand(){
 //change farm btn
 function chgFarmBtn(){
     let img = document.createElement('img')
-    img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/farm%20icon.png'
+    img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png'
     ctx.drawImage(img, cfbx, cfby, cfbw, cfbh)
     //
     let tSize = 20
