@@ -121,7 +121,7 @@ const plantIDs = {
         gTime : 500,
         maxYield : 6,
         minYield : 5,
-        mainImgSrc : 'file:///C:/Users/User/Desktop/FarmGame/Pictures/corn%20Texture/pixil-frame-0.png', 
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/corn%20Texture/pixil-frame-0.png', 
         offColor : '#ad9655', 
         onColor : '#fcba03', 
     },
@@ -134,7 +134,7 @@ const plantIDs = {
         gTime : 200,
         maxYield : 4,
         minYield : 1,
-        mainImgSrc : 'file:///C:/Users/User/Desktop/FarmGame/Pictures/potato%20Texture/pixil-frame-0.png', 
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/potato%20Texture/pixil-frame-0.png', 
         offColor : '#5f8a50', 
         onColor : '#34ab09', 
     },
@@ -147,7 +147,7 @@ const plantIDs = {
         gTime : 450,
         maxYield : 2,
         minYield : 3,
-        mainImgSrc : 'file:///C:/Users/User/Desktop/FarmGame/Pictures/carrot%20Texture/pixil-frame-0.png',
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/carrot%20Texture/pixil-frame-0.png',
         offColor : '#dba55a', 
         onColor : '#e68702',
     },  
@@ -161,7 +161,7 @@ const plantIDs = {
         gTime : 450,
         maxYield : 2,
         minYield : 3,
-        mainImgSrc : 'file:///C:/Users/User/Desktop/FarmGame/Pictures/carrot%20Texture/pixil-frame-0.png',
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/carrot%20Texture/pixil-frame-0.png',
         offColor : '#dba55a', 
         onColor : '#e68702',
     },   
@@ -185,7 +185,7 @@ class plant{
         this.cF = cF // current farm
         this.draw = ()=>{
             let img = document.createElement('img')
-            img.src = `file:///C:/Users/User/Desktop/FarmGame/Pictures/${this.kind}%20Texture/pixil-frame-${this.status}.png`
+            img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/${this.kind}%20Texture/pixil-frame-${this.status}.png`
             ctx.drawImage(img, this.x, this.y, landSize, landSize)
         }
     }
@@ -282,7 +282,7 @@ var cfby = canvas.height - (cfbh * 2)
 //change farm btn
 function chgFarmBtn(){
     let img = document.createElement('img')
-    img.src = 'file:///C:/Users/User/Desktop/FarmGame/Pictures/farm%20icon.png'
+    img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/farm%20icon.png'
     ctx.drawImage(img, cfbx, cfby, cfbw, cfbh)
     //
     let tSize = 20
@@ -301,7 +301,7 @@ class farmBtn{
         this.par = par
         this.draw = ()=>{
             let img = document.createElement('img')
-            img.src = 'file:///C:/Users/User/Desktop/FarmGame/Pictures/Farm.png'
+            img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png'
             ctx.drawImage(img, this.x, this.y, this.w, this.h)
             //text
             ctx.fillStyle = '#eee'
@@ -453,8 +453,8 @@ function drawMarketBtn(){
     var y = canvasHeight - iconSize
     var w = h = iconSize
     let img = document.createElement('img')
-    if(!market){img.src = 'file:///C:/Users/User/Desktop/FarmGame/Pictures/Market.png'}
-    else{img.src = 'file:///C:/Users/User/Desktop/FarmGame/Pictures/House.png'}
+    if(!market){img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Market.png'}
+    else{img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/House.png'}
     ctx.drawImage(img, x, y, w, h)
     canvas.onclick = (e)=>{
         if(e.x >= x && e.x <= x + w && e.y >= y && e.y <= y + h){
@@ -538,7 +538,7 @@ buyList.push(new buyOption(buyList.length, {
     profit : 0,
     cost : 10000,   
     qty : farmNum,
-    mainImgSrc : 'file:///C:/Users/User/Desktop/FarmGame/Pictures/Farm.png',
+    mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png',
 }))
 buyBtnsList = []
 class buyBtn{
