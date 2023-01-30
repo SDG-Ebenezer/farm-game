@@ -740,8 +740,10 @@ window.onkeydown = (e)=>{
     }
     //SHIFT
     if(e.shiftKey){
-            otherKeys.shift = true
+	console.log("Shift!")
+	otherKeys.shift = true
     }
+	console.log("key!")
 }
 window.onkeyup = (e)=>{
     if(e.shiftKey){
