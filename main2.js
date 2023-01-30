@@ -927,6 +927,7 @@ canvas.onmousedown = (e)=>{
     if(e.x >= helpBtnX && e.x <= helpBtnX + helpBtnW && e.y >= helpBtnY && e.y <= helpBtnY + helpBtnH){
         if(help) help = false
         else{help = true}
+        console.log(help)
     }
 }
 /****UPDATE */
