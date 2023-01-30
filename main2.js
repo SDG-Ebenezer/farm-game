@@ -697,7 +697,7 @@ function findPlantKindForPlanting(Sland){
 }
 /****MOUSE HANDLER */
 var otherKeys = {
-    ctrl : false,
+    shift : false,
 }
 window.onkeydown = (e)=>{
     //OTHER
@@ -738,16 +738,16 @@ window.onkeydown = (e)=>{
                 break
         }
     }
-    //CTRL
+    //SHIFT
     switch(e.key){
         case 'Control':
-            otherKeys.ctrl = true
+            otherKeys.shift = true
     }
 }
 window.onkeyup = (e)=>{
     switch(e.key){
         case 'Control':
-            otherKeys.ctrl = false
+            otherKeys.shift = false
     }
 }
 canvas.onmousedown = (e)=>{
@@ -761,7 +761,7 @@ canvas.onmousedown = (e)=>{
                     e.y >= Sland.y && e.y <= Sland.y + Sland.size){
                     //clear land
                     if(Sland.status == landStatus[0] && money - 100 >= 0){
-                        if(otherKeys.ctrl){
+                        if(otherKeys.shift){
                             for(var j in farms[currentFarm].landL){
                                 Sland = farms[currentFarm].landL[j]
                                 if(money - 100 >= 0 && Sland.status == 'uncleared'){
@@ -780,7 +780,7 @@ canvas.onmousedown = (e)=>{
                     }
                     //plant
                     else if(Sland.status == landStatus[1] && selectedCrop != null){
-                        if(otherKeys.ctrl){
+                        if(otherKeys.shift){
                             for(var j in farms[currentFarm].landL){
                                 Sland = farms[currentFarm].landL[j]
                                 if(selectedCrop.qty > 0 && Sland.status == 'cleared'){
@@ -795,7 +795,7 @@ canvas.onmousedown = (e)=>{
                     }
                     //harvest
                     else if(Sland.status == landStatus[2]){
-                        if(otherKeys.ctrl){
+                        if(otherKeys.shift){
                             let checkCrop
                             for(const crop of plantList.values()){
                                 if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
