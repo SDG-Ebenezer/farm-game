@@ -53,6 +53,9 @@ var cfby = canvas.height - (cfbh * 2)
 var buyBtnY = canvas.height * 32/70
 var maxBuyHeight = canvas.height - buyBtnY - inputy
 var sellNBuy = true //
+var bsBtnW = bsBtnH = iconSize
+var bsBtnX = canvas.width - iconSize - bsBtnW
+var bsBtnY = canvas.height - bsBtnH
 
 //land
 var lr, lg, lb
@@ -655,9 +658,6 @@ setInterval(()=>{
 
 
 /**** BUY/SELL BTN */
-var bsBtnW = bsBtnH = iconSize
-var bsBtnX = canvas.width - iconSize - bsBtnW
-var bsBtnY = canvas.height - bsBtnH
 function bsBtn(){
     let img = document.createElement('img')
     if(sellNBuy) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/buy.png'
@@ -671,8 +671,6 @@ function helpBtn(){
     ctx.fillStyle = '#00000066'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     //text
-    const para = document.createElement('p')
-    para.innerText = 'Lorem Ipsum'
     
 }
 function displayHelpBtn(){
