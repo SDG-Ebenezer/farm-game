@@ -113,7 +113,7 @@ class farmOrganizer{
 /****PLANT */
 const plantIDs = {
     corn : {
-        name : 'corn',
+        name : 'Corn',
         profit : 25,
         cost : 25, 
         qty : 1,
@@ -121,12 +121,12 @@ const plantIDs = {
         gTime : 500,
         maxYield : 6,
         minYield : 5,
-        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/corn%20Texture/pixil-frame-0.png', 
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Corn%20Texture/pixil-frame-0.png', 
         offColor : '#ad9655', 
         onColor : '#fcba03', 
     },
     potato : {
-        name : 'potato',
+        name : 'Potato',
         profit : 5,
         cost : 5,  
         qty : 1,
@@ -134,12 +134,12 @@ const plantIDs = {
         gTime : 200,
         maxYield : 4,
         minYield : 1,
-        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/potato%20Texture/pixil-frame-0.png', 
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Potato%20Texture/pixil-frame-0.png', 
         offColor : '#5f8a50', 
         onColor : '#34ab09', 
     },
     carrot : {
-        name : 'carrot',
+        name : 'Carrot',
         profit : 15,
         cost : 15,   
         qty : 1,
@@ -147,25 +147,10 @@ const plantIDs = {
         gTime : 450,
         maxYield : 2,
         minYield : 3,
-        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/carrot%20Texture/pixil-frame-0.png',
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Carrot%20Texture/pixil-frame-0.png',
         offColor : '#dba55a', 
         onColor : '#e68702',
     },  
-    /*
-    tomato : {
-        name : 'tomato',
-        profit : 10,
-        cost : 10,   
-        qty : 1,
-        status : 7,
-        gTime : 450,
-        maxYield : 2,
-        minYield : 3,
-        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/carrot%20Texture/pixil-frame-0.png',
-        offColor : '#dba55a', 
-        onColor : '#e68702',
-    },   
-    */ 
 }
 
 /****PLANTED PLANTS */
