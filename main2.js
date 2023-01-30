@@ -15,9 +15,15 @@ var mouseActive = true
 var selectedCrop //= 'corn'
 //market
 var market = false // t/f
-var pauseGame = false //
-
-let iconSize = 30
+//
+var changeFarmPG = false //
+//help
+var help = false
+var helpBtnW = helpBtnH = iconSize
+var helpBtnX = canvas.width - helpBtnW
+var helpBtnY = canvas.height - (helpBtnH * 3)
+//
+var iconSize = 30
 //
 cursorStatusOptions = ['clear', 'plant', 'harvest']
 cursorStatus = cursorStatusOptions[1]
@@ -25,17 +31,24 @@ cursorStatus = cursorStatusOptions[1]
 var quantity = "1"
 var active = false //
 
-let inputw = 200 //
-let inputh = 30 //
-let inputx = 10 //
-let inputy = canvas.height - inputh - 45 //
+var inputw = 200 //
+var inputh = 30 //
+var inputx = 10 //
+var inputy = canvas.height - inputh - 45 //
 
 //
 landStatus = ['uncleared', 'cleared', 'planted']
 //
 var currentDisplay = 0
 //btn
-var displayBtnW, displayBtnH, displayBtnX, displayBtnY
+var displayBtnW = 200
+var displayBtnH = 40
+var displayBtnX = canvas.width - 400
+var displayBtnY = 200 + 5
+//change farm
+var cfbw = cfbh = iconSize
+var cfbx = canvas.width - cfbw
+var cfby = canvas.height - (cfbh * 2)
 //buy
 var buyBtnY = canvas.height * 32/70
 var maxBuyHeight = canvas.height - buyBtnY - inputy
@@ -261,9 +274,6 @@ function drawLand(){
         farms[currentFarm].landL[z].draw()
     }
 }
-var cfbw = cfbh = iconSize
-var cfbx = canvas.width - cfbw
-var cfby = canvas.height - (cfbh * 2)
 //change farm btn
 function chgFarmBtn(){
     let img = document.createElement('img')
@@ -566,11 +576,6 @@ function displayBuy(){
 
 /**DISPLAY**/
 displayList = []
-//btn
-var displayBtnW = 200
-var displayBtnH = 40
-var displayBtnX = canvas.width - 400
-var displayBtnY = 200 + 5
 class display{
 	constructor(id, cur){
         this.id = id
@@ -660,6 +665,22 @@ function bsBtn(){
     ctx.drawImage(img, bsBtnX, bsBtnY)
 }
 
+/**** HELP BTN */
+function helpBtn(){
+    //background
+    ctx.fillStyle = '#00000066'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    //text
+    const para = document.createElement('p')
+    para.innerText = 'Lorem Ipsum'
+    
+}
+function displayHelpBtn(){
+    let img = document.createElement('img')
+    img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Help.png'
+    ctx.drawImage(img, helpBtnX, helpBtnY, helpBtnW, helpBtnH)
+}
+
 /****GAME TICK */
 setInterval(()=>{
     gameTick += 1
@@ -742,7 +763,7 @@ window.onkeyup = (e)=>{
 }
 canvas.onmousedown = (e)=>{
     //left click [plant, clear, harvest, etc.]
-    if(pauseGame != true){
+    if(changeFarmPG != true){
         //not market
         if(!market){
             for(let i in farms[currentFarm].landL){
@@ -889,11 +910,11 @@ canvas.onmousedown = (e)=>{
     }
     //change farm button
     if(e.x >= cfbx && e.x <= cfbx + cfbw && e.y >= cfby && e.y <= cfby + cfbh && !market){
-        if(pauseGame) pauseGame = false
-        else if(!pauseGame) pauseGame = true
+        if(changeFarmPG) changeFarmPG = false
+        else if(!changeFarmPG) changeFarmPG = true
     }
     //change farm
-    if(pauseGame){
+    if(changeFarmPG){
         let sFarm
         for(const btn of farmBtns.values()){
             if(e.x >= btn.x && e.x <= btn.x + btn.w && e.y >= btn.y && e.y <= btn.y + btn.h){
@@ -901,6 +922,11 @@ canvas.onmousedown = (e)=>{
             }
         }
         if(sFarm != null) currentFarm = sFarm
+    }
+    //help btn
+    if(e.x >= helpBtnX && e.x <= helpBtnX + helpBtnW && e.y >= helpBtnY && e.y <= helpBtnY + helpBtnH){
+        if(help) help = false
+        else{help = true}
     }
 }
 /****UPDATE */
@@ -915,7 +941,7 @@ setInterval(function(){
         drawCrops()
         drawMenuOptions()
         showMoney()
-        if(pauseGame){
+        if(changeFarmPG){
             drawFarms()
         }
         //
@@ -926,4 +952,8 @@ setInterval(function(){
     }
     drawMarketBtn() //
     timeGrowth() // crop growth
+    displayHelpBtn()
+    if(help){
+        helpBtn()
+    }
 }, 50)
