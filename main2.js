@@ -740,13 +740,13 @@ window.onkeydown = (e)=>{
     }
     //SHIFT
     switch(e.key){
-        case 'Control':
+        case 'Shift':
             otherKeys.shift = true
     }
 }
 window.onkeyup = (e)=>{
     switch(e.key){
-        case 'Control':
+        case 'Shift':
             otherKeys.shift = false
     }
 }
