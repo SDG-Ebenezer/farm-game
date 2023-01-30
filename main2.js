@@ -12,7 +12,7 @@ var gameTick = 0 //
 var money = 1000 //
 
 var mouseActive = true
-var selectedCrop //= 'corn'
+var selectedCrop
 //market
 var market = false // t/f
 //
@@ -533,7 +533,6 @@ for(let i = 0; i < Object.keys(plantIDs).length; i++){
 }
 buyList.push(new buyOption(buyList.length, {
     name : 'farm',
-    profit : 0,
     cost : 10000,   
     qty : farmNum,
     mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png',
@@ -865,10 +864,10 @@ canvas.onmousedown = (e)=>{
                     let btn = sellBtnsList[i]
                     if(e.x >= btn.x && e.x <= btn.x + btn.w 
                         && e.y >= btn.y && e.y <= btn.y + btn.h 
-                        && btn.btnID.qty > 0 && parseInt(quantity) != 0){
-                            if(parseInt(quantity) <= btn.btnID.qty){
-                                money += btn.btnID.qty * parseInt(quantity) ?? 1
-                                btn.btnID.qty -= parseInt(quantity) ?? 1
+                        && btn.btnID.qty > 0 && btn.btnID.profit != 0){
+                            if(btn.btnID.profit <= btn.btnID.qty){
+                                money += btn.btnID.qty * btn.btnID.profit ?? 1
+                                btn.btnID.qty -= btn.btnID.profit ?? 1
                             }
                     }
                 }
@@ -878,9 +877,9 @@ canvas.onmousedown = (e)=>{
                     let btn = buyBtnsList[i]
                     if(e.x >= btn.x && e.x <= btn.x + btn.w 
                         && e.y >= btn.y && e.y <= btn.y + btn.h 
-                        && money - (btn.btnID.cost  * quantity) >= 0 && quantity != 0){
-                            btn.btnID.qty += parseInt(quantity)
-                            money -= btn.btnID.cost * quantity
+                        && money - (btn.btnID.cost  * btn.btnID.profit) >= 0 && btn.btnID.profit != 0){
+                            btn.btnID.qty += btn.btnID.profit
+                            money -= btn.btnID.cost * btn.btnID.profit
                             if(btn.par.pId.name == 'farm') createNewLandForFarm() 
                     }
                 }
@@ -888,7 +887,6 @@ canvas.onmousedown = (e)=>{
         }
         //input
         if(e.x > inputx && e.x < inputx + inputw && e.y > inputy && e.y < inputy + inputh){
-            console.log(active, parseInt(quantity))
             quantity = ''
             active = true
         }
