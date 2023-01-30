@@ -869,7 +869,7 @@ canvas.onmousedown = (e)=>{
             else{
                 for(let i in buyBtnsList){
                     let btn = buyBtnsList[i]
-                    if(e.x >= btn.x - buyOption[i].size && e.x <= btn.x + btn.w 
+                    if(e.x >= btn.x && e.x <= btn.x + btn.w 
                         && e.y >= btn.y && e.y <= btn.y + btn.h 
                         && money - (btn.btnID.cost  * quantity) >= 0 && quantity != 0){
                             btn.btnID.qty += parseInt(quantity)
