@@ -739,15 +739,17 @@ window.onkeydown = (e)=>{
         }
     }
     //SHIFT
-    if(e.shiftKey){
-	console.log("Shift!")
-	otherKeys.shift = true
+    switch(e.key){
+	    case 'Shift':
+		console.log("Shift!")
+		otherKeys.shift = true
     }
 	console.log("key!")
 }
 window.onkeyup = (e)=>{
-    if(e.shiftKey){
-    	otherKeys.shift = false
+    switch(e.key){
+	    case 'Shift':
+    		otherKeys.shift = false
     }
 }
 canvas.onmousedown = (e)=>{
