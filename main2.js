@@ -193,13 +193,10 @@ class plant{
 }
 function timeGrowth(){    
     for(let i in plantList){
-        var crop = plantList[i]
-        for(let j = 0; j < Object.keys(plantIDs).length; j++){
-            var Splant = Object.values(plantIDs)[j]
-            if(gameTick == crop.plantTime){
-                crop.plantTime += Splant.gTime
-                if(crop.status < Splant.status) crop.status += 1
-            }
+        let crop = plantList[i]
+        if(gameTick == crop.plantTime){
+            crop.plantTime += crop.id.gTime
+            if(crop.status < crop.id.status) crop.status += 1
         }
     }
 }
