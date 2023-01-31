@@ -747,7 +747,8 @@ window.onkeyup = (e)=>{
     }
 }
 canvas.onmousedown = (e)=>{
-    if(!help){
+    if(help) help = false
+    else if(!help){
         //not market
         if(!market && !changeFarmPG){
             for(let i in farms[currentFarm].landL){
