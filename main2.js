@@ -747,162 +747,164 @@ window.onkeyup = (e)=>{
     }
 }
 canvas.onmousedown = (e)=>{
-    //not market
-    if(!market && !changeFarmPG && !help){
-        for(let i in farms[currentFarm].landL){
-            let Sland = farms[currentFarm].landL[i]
-            if(e.x >= Sland.x && e.x <= Sland.x + Sland.size &&
-                e.y >= Sland.y && e.y <= Sland.y + Sland.size){
-                //clear land
-                if(Sland.status == landStatus[0] && money - 100 >= 0){
-                    if(otherKeys.shift){
-                        for(var j in farms[currentFarm].landL){
-                            Sland = farms[currentFarm].landL[j]
-                            if(money - 100 >= 0 && Sland.status == 'uncleared'){
-                                Sland.status = landStatus[1]
-                                money -= 100
-                            }
-                        }
-                    }
-                    else{
-                        Sland.status = landStatus[1]
-                        money -= 100
-                        Sland.r = 84
-                        Sland.g = 61
-                        Sland.b = 17
-                    }
-                }
-                //plant
-                else if(Sland.status == landStatus[1] && selectedCrop != null){
-                    if(otherKeys.shift){
-                        for(var j in farms[currentFarm].landL){
-                            Sland = farms[currentFarm].landL[j]
-                            if(selectedCrop.qty > 0 && Sland.status == 'cleared'){
-                                plantCrop(Sland)
-                            }
-                        }
-                    }
-                    else{
-                        plantCrop(Sland)
-                    }
-                    
-                }
-                //harvest
-                else if(Sland.status == landStatus[2]){
-                    if(otherKeys.shift){
-                        let checkCrop
-                        for(const crop of plantList.values()){
-                            if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
-                        } 
-                        for(let cropCC = 0; cropCC < plantList.length; cropCC+=0){
-                            var crop = plantList[cropCC]
-                            if(checkCrop.kind == crop.kind){
-                                //Get yield
-                                if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
-                                else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
-                                //1% chance of regrowing
-                                if(random(1, 100) == 1){
-                                    checkCrop.status = 1
-                                    checkCrop.id.qty += checkCrop.id.maxYield
-                                }
-                                //
-                                else{
-                                    //find land
-                                    for(const Sland of farms[currentFarm].landL.values()){
-                                        if(Sland.x == crop.x && Sland.y == crop.y) Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
-                                    }
-                                    plantList.splice(cropCC, 1)
+    if(!help){
+        //not market
+        if(!market && !changeFarmPG){
+            for(let i in farms[currentFarm].landL){
+                let Sland = farms[currentFarm].landL[i]
+                if(e.x >= Sland.x && e.x <= Sland.x + Sland.size &&
+                    e.y >= Sland.y && e.y <= Sland.y + Sland.size){
+                    //clear land
+                    if(Sland.status == landStatus[0] && money - 100 >= 0){
+                        if(otherKeys.shift){
+                            for(var j in farms[currentFarm].landL){
+                                Sland = farms[currentFarm].landL[j]
+                                if(money - 100 >= 0 && Sland.status == 'uncleared'){
+                                    Sland.status = landStatus[1]
+                                    money -= 100
                                 }
                             }
-                            else{cropCC++}
                         }
-                    }
-                    else{
-                        let checkCrop
-                        for(const crop of plantList.values()){
-                            if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
-                        } 
-                        //Get yield
-                        if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
-                        else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
-                        //1% chance of regrowing
-                        if(random(1, 100) == 1){
-                            checkCrop.status = 1
-                            checkCrop.id.qty += checkCrop.id.maxYield
-                        }
-                        //
                         else{
-                            //find land
-                            Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
-                            for(var z in plantList){
-                                if(plantList[z] == checkCrop) plantList.splice(z, 1)
+                            Sland.status = landStatus[1]
+                            money -= 100
+                            Sland.r = 84
+                            Sland.g = 61
+                            Sland.b = 17
+                        }
+                    }
+                    //plant
+                    else if(Sland.status == landStatus[1] && selectedCrop != null){
+                        if(otherKeys.shift){
+                            for(var j in farms[currentFarm].landL){
+                                Sland = farms[currentFarm].landL[j]
+                                if(selectedCrop.qty > 0 && Sland.status == 'cleared'){
+                                    plantCrop(Sland)
+                                }
+                            }
+                        }
+                        else{
+                            plantCrop(Sland)
+                        }
+                        
+                    }
+                    //harvest
+                    else if(Sland.status == landStatus[2]){
+                        if(otherKeys.shift){
+                            let checkCrop
+                            for(const crop of plantList.values()){
+                                if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
+                            } 
+                            for(let cropCC = 0; cropCC < plantList.length; cropCC+=0){
+                                var crop = plantList[cropCC]
+                                if(checkCrop.kind == crop.kind){
+                                    //Get yield
+                                    if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
+                                    else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
+                                    //1% chance of regrowing
+                                    if(random(1, 100) == 1){
+                                        checkCrop.status = 1
+                                        checkCrop.id.qty += checkCrop.id.maxYield
+                                    }
+                                    //
+                                    else{
+                                        //find land
+                                        for(const Sland of farms[currentFarm].landL.values()){
+                                            if(Sland.x == crop.x && Sland.y == crop.y) Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
+                                        }
+                                        plantList.splice(cropCC, 1)
+                                    }
+                                }
+                                else{cropCC++}
+                            }
+                        }
+                        else{
+                            let checkCrop
+                            for(const crop of plantList.values()){
+                                if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
+                            } 
+                            //Get yield
+                            if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
+                            else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
+                            //1% chance of regrowing
+                            if(random(1, 100) == 1){
+                                checkCrop.status = 1
+                                checkCrop.id.qty += checkCrop.id.maxYield
+                            }
+                            //
+                            else{
+                                //find land
+                                Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
+                                for(var z in plantList){
+                                    if(plantList[z] == checkCrop) plantList.splice(z, 1)
+                                }
                             }
                         }
                     }
-                }
-            }  
+                }  
+            }
         }
-    }
-    //market
-    else if(market && !help){
-        if(sellNBuy){
-            for(let i in sellBtnsList){
-                let btn = sellBtnsList[i]
-                if(e.x >= btn.x && e.x <= btn.x + btn.w 
-                    && e.y >= btn.y && e.y <= btn.y + btn.h 
-                    && btn.btnID.qty > 0 && parseInt(quantity) != 0){
-                        if(parseInt(quantity) <= btn.btnID.qty){
-                            money += btn.btnID.profit * parseInt(quantity) ?? 1
-                            btn.btnID.qty -= parseInt(quantity)
-                        }
+        //market
+        else if(market){
+            if(sellNBuy){
+                for(let i in sellBtnsList){
+                    let btn = sellBtnsList[i]
+                    if(e.x >= btn.x && e.x <= btn.x + btn.w 
+                        && e.y >= btn.y && e.y <= btn.y + btn.h 
+                        && btn.btnID.qty > 0 && parseInt(quantity) != 0){
+                            if(parseInt(quantity) <= btn.btnID.qty){
+                                money += btn.btnID.profit * parseInt(quantity) ?? 1
+                                btn.btnID.qty -= parseInt(quantity)
+                            }
+                    }
                 }
             }
+            else{
+                for(let i in buyBtnsList){
+                    let btn = buyBtnsList[i]
+                    if(e.x >= btn.x && e.x <= btn.x + btn.w 
+                        && e.y >= btn.y && e.y <= btn.y + btn.h 
+                        && money - (btn.btnID.cost  * quantity) >= 0 && quantity != 0){
+                            btn.btnID.qty += parseInt(quantity)
+                            money -= btn.btnID.cost * quantity
+                            if(btn.par.pId.name == 'farm') newFarmLand() 
+                    }
+                }
+            }
+        }
+        //input
+        if(e.x > inputx && e.x < inputx + inputw && e.y > inputy && e.y < inputy + inputh){
+            quantity = ''
+            active = true
         }
         else{
-            for(let i in buyBtnsList){
-                let btn = buyBtnsList[i]
-                if(e.x >= btn.x && e.x <= btn.x + btn.w 
-                    && e.y >= btn.y && e.y <= btn.y + btn.h 
-                    && money - (btn.btnID.cost  * quantity) >= 0 && quantity != 0){
-                        btn.btnID.qty += parseInt(quantity)
-                        money -= btn.btnID.cost * quantity
-                        if(btn.par.pId.name == 'farm') newFarmLand() 
+            active = false
+        }
+        //Display, as in the big image and the current profit amount
+        if(e.x >= displayBtnX && e.x <= displayBtnX + displayBtnW && e.y >= displayBtnY && e.y <= displayBtnY + displayBtnH){
+            currentDisplay += 1
+            if(currentDisplay > displayList.length - 1) currentDisplay = 0
+        }
+        //sell/buy btn
+        if(e.x >= bsBtnX && e.x <= bsBtnX + bsBtnW && e.y >= bsBtnY && e.y <= bsBtnY + bsBtnH && market){
+            if(sellNBuy) sellNBuy = false
+            else if(sellNBuy == false) sellNBuy = true
+        }
+        //change farm button
+        if(e.x >= cfbx && e.x <= cfbx + cfbw && e.y >= cfby && e.y <= cfby + cfbh && !market){
+            if(changeFarmPG) changeFarmPG = false
+            else if(!changeFarmPG) changeFarmPG = true
+        }
+        //change farm
+        if(changeFarmPG){
+            let sFarm
+            for(const btn of farmBtns.values()){
+                if(e.x >= btn.x && e.x <= btn.x + btn.w && e.y >= btn.y && e.y <= btn.y + btn.h){
+                    sFarm = btn.par.id
                 }
             }
+            if(sFarm != null) currentFarm = sFarm
         }
-    }
-    //input
-    if(e.x > inputx && e.x < inputx + inputw && e.y > inputy && e.y < inputy + inputh){
-        quantity = ''
-        active = true
-    }
-    else{
-        active = false
-    }
-    //Display, as in the big image and the current profit amount
-    if(e.x >= displayBtnX && e.x <= displayBtnX + displayBtnW && e.y >= displayBtnY && e.y <= displayBtnY + displayBtnH){
-        currentDisplay += 1
-        if(currentDisplay > displayList.length - 1) currentDisplay = 0
-    }
-    //sell/buy btn
-    if(e.x >= bsBtnX && e.x <= bsBtnX + bsBtnW && e.y >= bsBtnY && e.y <= bsBtnY + bsBtnH && market){
-        if(sellNBuy) sellNBuy = false
-        else if(sellNBuy == false) sellNBuy = true
-    }
-    //change farm button
-    if(e.x >= cfbx && e.x <= cfbx + cfbw && e.y >= cfby && e.y <= cfby + cfbh && !market){
-        if(changeFarmPG) changeFarmPG = false
-        else if(!changeFarmPG) changeFarmPG = true
-    }
-    //change farm
-    if(changeFarmPG){
-        let sFarm
-        for(const btn of farmBtns.values()){
-            if(e.x >= btn.x && e.x <= btn.x + btn.w && e.y >= btn.y && e.y <= btn.y + btn.h){
-                sFarm = btn.par.id
-            }
-        }
-        if(sFarm != null) currentFarm = sFarm
     }
     //help btn
     if(e.x >= helpBtnX && e.x <= helpBtnX + helpBtnW && e.y >= helpBtnY && e.y <= helpBtnY + helpBtnH){
