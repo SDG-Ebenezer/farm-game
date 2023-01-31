@@ -24,7 +24,6 @@ var help = false
 var helpBtnW = helpBtnH = iconSize
 var helpBtnX = canvas.width - helpBtnW
 var helpBtnY = canvas.height - (helpBtnH * 2)
-
 //
 cursorStatusOptions = ['clear', 'plant', 'harvest']
 cursorStatus = cursorStatusOptions[1]
