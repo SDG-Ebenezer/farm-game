@@ -134,7 +134,7 @@ const plantIDs = {
         cost : 25, 
         qty : 1,
         status : 8,
-        gTime : 500,
+        gTime : 30,
         maxYield : 6,
         minYield : 5,
         mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Corn%20Texture/pixil-frame-0.png', 
@@ -147,7 +147,7 @@ const plantIDs = {
         cost : 5,  
         qty : 1,
         status : 7,
-        gTime : 200,
+        gTime : 5,
         maxYield : 4,
         minYield : 1,
         mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Potato%20Texture/pixil-frame-0.png', 
@@ -160,7 +160,7 @@ const plantIDs = {
         cost : 15,   
         qty : 1,
         status : 7,
-        gTime : 450,
+        gTime : 15,
         maxYield : 2,
         minYield : 3,
         mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Carrot%20Texture/pixil-frame-0.png',
@@ -680,7 +680,7 @@ function displayHelpBtn(){
 /****GAME TICK */
 setInterval(()=>{
     gameTick += 1
-}, 100)
+}, 1000)
 //
 function findPlantKindForPlanting(Sland){
     for(let i = 0; i < Object.keys(plantIDs).length; i++){
