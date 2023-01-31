@@ -207,7 +207,7 @@ function drawCrops(){
 }
 
 /****LAND/DRAW */
-function redrawBackground(){
+function background(){
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
@@ -240,7 +240,7 @@ function createLand(){
         farmBtns.push(new farmBtn(x, y, w, h, farms[f]))
     }
 }
-function createNewLandForFarm(){
+function newFarmLand(){
     farms.push(new farmOrganizer(farms.length))
     landX = landSize * 2
     landY = 0
@@ -400,7 +400,7 @@ function marketContent(){
             sellBtnsList[i].draw()
         }
         displayList[currentDisplay].draw()
-        drawDisplayBtn()
+        displayBtn()
     }
     else{
         displayBuy()
@@ -627,7 +627,7 @@ for(let i = 0; i < Object.keys(plantIDs).length; i++){
     //Object.values(plantIDs)[i]    
 }
 //next display
-function drawDisplayBtn(){
+function displayBtn(){
     var textSize = displayBtnW * 2/3
 
     ctx.fillStyle = '#555'
@@ -661,14 +661,14 @@ function bsBtn(){
 }
 
 /**** HELP BTN */
-function helpBtn(){
+function help(){
     //background
     ctx.fillStyle = '#00000066'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     //text
     
 }
-function displayHelpBtn(){
+function helpBtn(){
     let img = document.createElement('img')
     img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Help.png'
     ctx.drawImage(img, helpBtnX, helpBtnY, helpBtnW, helpBtnH)
@@ -679,7 +679,7 @@ setInterval(()=>{
     gameTick += 1
 }, 1000)
 //
-function findPlantKindForPlanting(Sland){
+function plantCrop(Sland){
     for(let i = 0; i < Object.keys(plantIDs).length; i++){
         let Splant = Object.values(plantIDs)[i]
         if(selectedCrop.name == Splant.name && Splant.qty > 0){
@@ -748,7 +748,7 @@ window.onkeyup = (e)=>{
 }
 canvas.onmousedown = (e)=>{
     //not market
-    if(!market && changeFarmPG != true){
+    if(!market && !changeFarmPG && !help){
         for(let i in farms[currentFarm].landL){
             let Sland = farms[currentFarm].landL[i]
             if(e.x >= Sland.x && e.x <= Sland.x + Sland.size &&
@@ -778,12 +778,12 @@ canvas.onmousedown = (e)=>{
                         for(var j in farms[currentFarm].landL){
                             Sland = farms[currentFarm].landL[j]
                             if(selectedCrop.qty > 0 && Sland.status == 'cleared'){
-                                findPlantKindForPlanting(Sland)
+                                plantCrop(Sland)
                             }
                         }
                     }
                     else{
-                        findPlantKindForPlanting(Sland)
+                        plantCrop(Sland)
                     }
                     
                 }
@@ -844,7 +844,7 @@ canvas.onmousedown = (e)=>{
         }
     }
     //market
-    else if(market){
+    else if(market && !help){
         if(sellNBuy){
             for(let i in sellBtnsList){
                 let btn = sellBtnsList[i]
@@ -866,7 +866,7 @@ canvas.onmousedown = (e)=>{
                     && money - (btn.btnID.cost  * quantity) >= 0 && quantity != 0){
                         btn.btnID.qty += parseInt(quantity)
                         money -= btn.btnID.cost * quantity
-                        if(btn.par.pId.name == 'farm') createNewLandForFarm() 
+                        if(btn.par.pId.name == 'farm') newFarmLand() 
                 }
             }
         }
@@ -915,7 +915,7 @@ createLand()
 setInterval(function(){
     if(!market){
         //
-        redrawBackground()
+        background()
         //
         drawMenu() 
         drawLand()
@@ -933,8 +933,8 @@ setInterval(function(){
     }
     drawMarketBtn() //
     timeGrowth() // crop growth
-    displayHelpBtn()
+    helpBtn()
     if(help){
-        helpBtn()
+        help()
     }
 }, 50)
