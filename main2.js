@@ -177,7 +177,7 @@ class plant{
         this.y = y
 
         this.id = id
-        this.plantTime = plantTime
+        this.plantTime = plantTime + this.id.gTime
 
         this.kind = this.id.name
         this.status = 1
@@ -196,7 +196,7 @@ function timeGrowth(){
         var crop = plantList[i]
         for(let j = 0; j < Object.keys(plantIDs).length; j++){
             var Splant = Object.values(plantIDs)[j]
-            if(gameTick == crop.plantTime + Splant.gTime){
+            if(gameTick == crop.plantTime){
                 crop.plantTime += Splant.gTime
                 if(crop.status < Splant.status) crop.status += 1
             }
