@@ -7,7 +7,7 @@ ctx = canvas.getContext("2d")
 canvas.height = canvasHeight
 canvas.width = canvasWidth
 //
-var iconSize = 30
+var iconSize = canvas.width * 3/70
 //
 var gameTick = 0 //
 
