@@ -747,9 +747,7 @@ window.onkeyup = (e)=>{
     }
 }
 canvas.onmousedown = (e)=>{
-    if(changeFarmPG) changeFarmPG = false
-    if(help) help = false
-    else if(!help){
+    if(!help){
         //not market
         if(!market && !changeFarmPG){
             for(let i in farms[currentFarm].landL){
@@ -905,7 +903,8 @@ canvas.onmousedown = (e)=>{
                     sFarm = btn.par.id
                 }
             }
-            if(sFarm != null) currentFarm = sFarm
+            if(sFarm == null) changeFarmPG = false // if nothing is pressed, close
+            else{currentFarm = sFarm}
         }
     }
     //help btn
@@ -913,6 +912,7 @@ canvas.onmousedown = (e)=>{
         if(help) help = false
         else{help = true}
     }
+    else{help = false}
 }
 /****UPDATE */
 createLand()
