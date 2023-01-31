@@ -23,7 +23,7 @@ var changeFarmPG = false //
 var help = false
 var helpBtnW = helpBtnH = iconSize
 var helpBtnX = canvas.width - helpBtnW
-var helpBtnY = canvas.height - (helpBtnH * 3)
+var helpBtnY = canvas.height - (helpBtnH * 2)
 
 //
 cursorStatusOptions = ['clear', 'plant', 'harvest']
@@ -49,7 +49,7 @@ var displayBtnY = 200 + 5
 //change farm
 var cfbw = cfbh = iconSize
 var cfbx = canvas.width - cfbw
-var cfby = canvas.height - (cfbh * 2)
+var cfby = canvas.height - (cfbh * 3)
 //buy
 var buyBtnY = canvas.height * 32/70
 var maxBuyHeight = canvas.height - buyBtnY - inputy
