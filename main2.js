@@ -6,7 +6,9 @@ canvas.focus()
 ctx = canvas.getContext("2d")
 canvas.height = canvasHeight
 canvas.width = canvasWidth
-
+//
+var iconSize = 30
+//
 var gameTick = 0 //
 
 var money = 1000 //
@@ -22,8 +24,7 @@ var help = false
 var helpBtnW = helpBtnH = iconSize
 var helpBtnX = canvas.width - helpBtnW
 var helpBtnY = canvas.height - (helpBtnH * 3)
-//
-var iconSize = 30
+
 //
 cursorStatusOptions = ['clear', 'plant', 'harvest']
 cursorStatus = cursorStatusOptions[1]
