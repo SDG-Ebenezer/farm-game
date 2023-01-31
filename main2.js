@@ -240,7 +240,6 @@ function createLand(){
         let w = h = canvas.width/10
         let x = (farms[f].id * w >= canvas.width) ? (farms[f].id * w) - canvas.width * (Math.floor((farms[f].id * w)/canvas.width)) : farms[f].id * w
         let y = Math.floor(farms[f].id * w/canvas.width) * h
-        console.log(x, y)
         farmBtns.push(new farmBtn(x, y, w, h, farms[f]))
     }
 }
@@ -741,10 +740,8 @@ window.onkeydown = (e)=>{
     //SHIFT
     switch(e.key){
 	    case 'Shift':
-		console.log("Shift!")
 		otherKeys.shift = true
     }
-	console.log("key!")
 }
 window.onkeyup = (e)=>{
     switch(e.key){
@@ -879,7 +876,6 @@ canvas.onmousedown = (e)=>{
     }
     //input
     if(e.x > inputx && e.x < inputx + inputw && e.y > inputy && e.y < inputy + inputh){
-        console.log(active, parseInt(quantity))
         quantity = ''
         active = true
     }
@@ -915,7 +911,6 @@ canvas.onmousedown = (e)=>{
     if(e.x >= helpBtnX && e.x <= helpBtnX + helpBtnW && e.y >= helpBtnY && e.y <= helpBtnY + helpBtnH){
         if(help) help = false
         else{help = true}
-        console.log(help)
     }
 }
 /****UPDATE */
