@@ -661,7 +661,7 @@ function bsBtn(){
 }
 
 /**** HELP BTN */
-function help(){
+function helpF(){
     //background
     ctx.fillStyle = '#00000066'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -937,6 +937,6 @@ setInterval(function(){
     timeGrowth() // crop growth
     helpBtn()
     if(help){
-        help()
+        helpF()
     }
 }, 50)
