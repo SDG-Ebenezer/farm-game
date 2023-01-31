@@ -936,8 +936,8 @@ setInterval(function(){
     }
     drawMarketBtn() //
     timeGrowth() // crop growth
-    helpBtn()
     if(help){
         helpF()
     }
+    helpBtn()
 }, 50)
