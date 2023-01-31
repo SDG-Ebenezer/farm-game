@@ -747,6 +747,7 @@ window.onkeyup = (e)=>{
     }
 }
 canvas.onmousedown = (e)=>{
+    if(changeFarmPG) changeFarmPG = false
     if(help) help = false
     else if(!help){
         //not market
