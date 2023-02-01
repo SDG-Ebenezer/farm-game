@@ -82,8 +82,8 @@ function random(min, max){
 var currentLand = 0
 
 class land{
-    constructor(size, x, y, status, id){
-        this.size = size
+    constructor(x, y, status, id){
+        this.size = landSize
         this.x = x
         this.y = y
         this.g = random(50,80)
@@ -211,7 +211,7 @@ function createLand(){
     for(let k = 0; k < farmNum; k ++){
         farms.push(new farmOrganizer(k))
         for(let j = 0; j < partOf ** 2 - partOf; j++){
-            var landChunk = new land(landSize, landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
+            var landChunk = new land(landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
             farms[k].landL.push(landChunk)
             //calculate x,y
             if(landX + landSize <= canvasWidth){
