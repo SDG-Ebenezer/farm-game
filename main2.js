@@ -744,14 +744,16 @@ window.onkeyup = (e)=>{
     		otherKeys.shift = false
     }
 }
+function btnCk(x, y, w, h, mx, my){
+    if(mx >= x && mx <= x + w && my >= y && my <= y + h) return true
+}
 canvas.onmousedown = (e)=>{
     if(!help){
         //not market
         if(!market && !changeFarmPG){
             for(let i in farms[currentFarm].landL){
                 let Sland = farms[currentFarm].landL[i]
-                if(e.x >= Sland.x && e.x <= Sland.x + Sland.size &&
-                    e.y >= Sland.y && e.y <= Sland.y + Sland.size){
+                if(btnCk(Sland.x, Sland.y, Sland.size, Sland.size, e.x, e.y)){
                     //clear land
                     if(Sland.status == landStatus[0] && money - 100 >= 0){
                         if(otherKeys.shift){
@@ -793,7 +795,7 @@ canvas.onmousedown = (e)=>{
                             } 
                             for(let cropCC = 0; cropCC < plantList.length; cropCC+=0){
                                 var crop = plantList[cropCC]
-                                if(checkCrop.kind == crop.kind){
+                                if(checkCrop.kind == crop.kind && crop.cF == currentFarm){
                                     //Get yield
                                     if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
                                     else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
@@ -819,20 +821,22 @@ canvas.onmousedown = (e)=>{
                             for(const crop of plantList.values()){
                                 if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
                             } 
-                            //Get yield
-                            if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
-                            else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
-                            //1% chance of regrowing
-                            if(random(1, 100) == 1){
-                                checkCrop.status = 1
-                                checkCrop.id.qty += checkCrop.id.maxYield
-                            }
-                            //
-                            else{
-                                //find land
-                                Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
-                                for(var z in plantList){
-                                    if(plantList[z] == checkCrop) plantList.splice(z, 1)
+                            if(crop.cF == currentFarm){
+                                //Get yield
+                                if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
+                                else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
+                                //1% chance of regrowing
+                                if(random(1, 100) == 1){
+                                    checkCrop.status = 1
+                                    checkCrop.id.qty += checkCrop.id.maxYield
+                                }
+                                //
+                                else{
+                                    //find land
+                                    Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
+                                    for(var z in plantList){
+                                        if(plantList[z] == checkCrop) plantList.splice(z, 1)
+                                    }
                                 }
                             }
                         }
@@ -869,7 +873,7 @@ canvas.onmousedown = (e)=>{
             }
         }
         //input
-        if(e.x > inputx && e.x < inputx + inputw && e.y > inputy && e.y < inputy + inputh){
+        if(btnCk(inputx, inputy, inputw, inputh, e.x, e.y)){
             quantity = ''
             active = true
         }
@@ -877,17 +881,17 @@ canvas.onmousedown = (e)=>{
             active = false
         }
         //Display, as in the big image and the current profit amount
-        if(e.x >= displayBtnX && e.x <= displayBtnX + displayBtnW && e.y >= displayBtnY && e.y <= displayBtnY + displayBtnH){
+        if(btnCk(displayBtnX, displayBtnY, displayBtnW, displayBtnH, e.x, e.y)){
             currentDisplay += 1
             if(currentDisplay > displayList.length - 1) currentDisplay = 0
         }
         //sell/buy btn
-        if(e.x >= bsBtnX && e.x <= bsBtnX + bsBtnW && e.y >= bsBtnY && e.y <= bsBtnY + bsBtnH && market){
+        if(btnCk(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
             if(sellNBuy) sellNBuy = false
             else if(sellNBuy == false) sellNBuy = true
         }
         //change farm button
-        if(e.x >= cfbx && e.x <= cfbx + cfbw && e.y >= cfby && e.y <= cfby + cfbh && !market){
+        if(btnCk(cfbx, cfby, cfbw, cfbh, e.x, e.y) && !market){
             if(changeFarmPG) changeFarmPG = false
             else if(!changeFarmPG) changeFarmPG = true
         }
@@ -906,7 +910,7 @@ canvas.onmousedown = (e)=>{
         }
     }
     //help btn
-    if(e.x >= helpBtnX && e.x <= helpBtnX + helpBtnW && e.y >= helpBtnY && e.y <= helpBtnY + helpBtnH){
+    if(btnCk(helpBtnX, helpBtnY, helpBtnW, helpBtnH, e.x, e.y)){
         if(help) help = false
         else{help = true}
     }
