@@ -264,6 +264,7 @@ function newFarmLand(){
 }
 var currentFarm = 0
 function drawLand(){
+    console.log(currentFarm)
     for(let z = 0; z < farms[currentFarm].landL.length; z++){
         farms[currentFarm].landL[z].draw()
     }
