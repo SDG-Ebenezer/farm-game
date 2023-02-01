@@ -90,6 +90,7 @@ class land{
         this.g = random(50,80)
         this.status = status 
         this.id = id
+        this.rgb = 'rgb(0,0,0)'
         /*
         STATUS:  UNCLEARED -> CLEARED -> PLANTED
         */
@@ -266,6 +267,7 @@ function newFarmLand(){
 function drawLand(){
     for(let z = 0; z < farms[currentFarm].landL.length; z++){
         farms[currentFarm].landL[z].draw()
+        console.log(farms[currentFarm].landL[z])
     }
 }
 //change farm btn
