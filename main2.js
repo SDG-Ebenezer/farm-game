@@ -72,6 +72,7 @@ var optionSize = menuWidth * 2/3
 
 //farms
 var farmNum = 1 //start out num
+var currentFarm = 0
 
 /****GET RANDOM NUM */
 function random(min, max){
@@ -197,7 +198,7 @@ function timeGrowth(){
 }
 function drawCrops(){
     for(let i in plantList){
-        if(currentFarm == plantList[i].cF) plantList[i].draw()
+        if(plantList[i].cF == currentFarm) plantList[i].draw()
     }
 }
 
@@ -262,7 +263,6 @@ function newFarmLand(){
                 farms[farms.length - 1]))
     farmNum += 1
 }
-var currentFarm = 0
 function drawLand(){
     console.log(currentFarm)
     for(let z = 0; z < farms[currentFarm].landL.length; z++){
@@ -903,7 +903,6 @@ canvas.onmousedown = (e)=>{
                     console.log('1', currentFarm)
                     currentFarm = btn.par.id
                     console.log('2', currentFarm)
-                    changeFarmPG = false
                 }
             }  
         }
