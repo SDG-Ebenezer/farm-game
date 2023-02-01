@@ -661,7 +661,10 @@ function helpF(){
     ctx.fillStyle = '#00000066'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     //text
-    
+    /*
+    const para = document.createElement('p')
+    para.innerHTML = 'Hello!!!!!!!!'
+    */
 }
 function helpBtn(){
     let img = document.createElement('img')
