@@ -264,7 +264,6 @@ function newFarmLand(){
     farmNum += 1
 }
 function drawLand(){
-    console.log(currentFarm)
     for(let z = 0; z < farms[currentFarm].landL.length; z++){
         farms[currentFarm].landL[z].draw()
     }
@@ -900,9 +899,7 @@ canvas.onmousedown = (e)=>{
         if(changeFarmPG){
             for(const btn of farmBtns.values()){
                 if(btnCk(btn.x, btn.y, btn.w, btn.h, e.x, e.y)){
-                    console.log('1', currentFarm)
                     currentFarm = btn.par.id
-                    console.log('2', currentFarm)
                 }
             }  
         }
