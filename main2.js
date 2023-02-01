@@ -899,7 +899,10 @@ canvas.onmousedown = (e)=>{
                     sFarm = btn.par.id
                 }
             }
-            if(sFarm != null) currentFarm = sFarm
+            if(sFarm != null){
+                currentFarm = sFarm
+                changeFarmPG = false
+            }
         }
     }
     //help btn
