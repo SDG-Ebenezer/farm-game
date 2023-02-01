@@ -899,7 +899,9 @@ canvas.onmousedown = (e)=>{
         if(changeFarmPG){
             for(const btn of farmBtns.values()){
                 if(btnCk(btn.x, btn.y, btn.w, btn.h, e.x, e.y)){
+                    console.log('1', currentFarm)
                     currentFarm = btn.par.id
+                    console.log('2', currentFarm)
                     changeFarmPG = false
                 }
             }  
