@@ -94,20 +94,15 @@ class land{
         */
         this.draw = ()=>{
             if(this.status == landStatus[0]){
-                this.r = 3
-                this.b = 30
+                this.rgb = `rgb(3, ${this.g}, 30)`
             }
             else if(this.status == 'cleared'){
-                this.r = 84
-                this.g = 61
-                this.b = 17
+                this.rgb = 'rgb(84, 61, 17)'
             }
             else if(this.status == 'planted'){
-                this.r = 54
-                this.g = 39
-                this.b = 11
+                this.rgb = 'rgb(54, 39, 11)'
             }
-            ctx.fillStyle = `rgb(${this.r}, ${this.g}, ${this.b})`
+            ctx.fillStyle = this.rgb
             ctx.fillRect(this.x, this.y, this.size, this.size)
             if(showLandId){
                 ctx.fillStyle = '#AAA'
@@ -768,9 +763,7 @@ canvas.onmousedown = (e)=>{
                         else{
                             Sland.status = landStatus[1]
                             money -= 100
-                            Sland.r = 84
-                            Sland.g = 61
-                            Sland.b = 17
+                            Sland.g = random(30, 80)
                         }
                     }
                     //plant
