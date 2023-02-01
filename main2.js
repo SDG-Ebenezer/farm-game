@@ -71,7 +71,7 @@ var menuWidth = landSize * 2
 var optionSize = menuWidth * 2/3
 
 //farms
-var farmNum = 1 //start out num
+var farmNum = 2 //start out num
 var currentFarm = 0
 
 /****GET RANDOM NUM */
@@ -492,7 +492,7 @@ class buyOption{
         this.pId = pId
 
         this.imgSrc = pId.mainImgSrc
-        this.size = (! this.id * 75 > maxBuyHeight) ? 75 : maxBuyHeight/4
+        this.size = canvas.width/10
         this.x = 0
         this.y = 0 + (this.size * this.id)
         this.drawMajorDisplay = ()=>{
@@ -746,7 +746,7 @@ window.onkeyup = (e)=>{
     		otherKeys.shift = false
     }
 }
-function btnCk(x, y, w, h, mx, my){
+function checkClick(x, y, w, h, mx, my){
     if(mx >= x && mx <= x + w && my >= y && my <= y + h) return true
 }
 canvas.onmousedown = (e)=>{
@@ -755,7 +755,7 @@ canvas.onmousedown = (e)=>{
         if(!market && !changeFarmPG){
             for(let i in farms[currentFarm].landL){
                 let Sland = farms[currentFarm].landL[i]
-                if(btnCk(Sland.x, Sland.y, Sland.size, Sland.size, e.x, e.y)){
+                if(checkClick(Sland.x, Sland.y, Sland.size, Sland.size, e.x, e.y)){
                     //clear land
                     if(Sland.status == landStatus[0] && money - 100 >= 0){
                         if(otherKeys.shift){
@@ -792,10 +792,10 @@ canvas.onmousedown = (e)=>{
                     else if(Sland.status == landStatus[2]){
                         if(otherKeys.shift){
                             let checkCrop
-                            for(const crop of plantList.values()){
+                            for(const crop of plantList.values()){ //
                                 if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
                             } 
-                            for(let cropCC = 0; cropCC < plantList.length; cropCC+=0){
+                            for(let cropCC = 0; cropCC < plantList.length;){ //
                                 var crop = plantList[cropCC]
                                 if(checkCrop.kind == crop.kind && crop.cF == currentFarm){
                                     //Get yield
@@ -820,10 +820,10 @@ canvas.onmousedown = (e)=>{
                         }
                         else{
                             let checkCrop
-                            for(const crop of plantList.values()){
+                            for(const crop of plantList.values()){ //
                                 if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
                             } 
-                            if(crop.cF == currentFarm){
+                            if(checkCrop.cF == currentFarm){ //
                                 //Get yield
                                 if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
                                 else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
@@ -875,7 +875,7 @@ canvas.onmousedown = (e)=>{
             }
         }
         //input
-        if(btnCk(inputx, inputy, inputw, inputh, e.x, e.y)){
+        if(checkClick(inputx, inputy, inputw, inputh, e.x, e.y)){
             quantity = ''
             active = true
         }
@@ -883,31 +883,32 @@ canvas.onmousedown = (e)=>{
             active = false
         }
         //Display, as in the big image and the current profit amount
-        if(btnCk(displayBtnX, displayBtnY, displayBtnW, displayBtnH, e.x, e.y)){
+        if(checkClick(displayBtnX, displayBtnY, displayBtnW, displayBtnH, e.x, e.y)){
             currentDisplay += 1
             if(currentDisplay > displayList.length - 1) currentDisplay = 0
         }
         //sell/buy btn
-        if(btnCk(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
+        if(checkClick(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
             if(sellNBuy) sellNBuy = false
             else if(sellNBuy == false) sellNBuy = true
         }
         //change farm button
-        if(btnCk(cfbx, cfby, cfbw, cfbh, e.x, e.y) && !market){
+        if(checkClick(cfbx, cfby, cfbw, cfbh, e.x, e.y) && !market){
             if(changeFarmPG) changeFarmPG = false
             else if(!changeFarmPG) changeFarmPG = true
         }
         //change farm
         if(changeFarmPG){
             for(const btn of farmBtns.values()){
-                if(btnCk(btn.x, btn.y, btn.w, btn.h, e.x, e.y)){
+                if(checkClick(btn.x, btn.y, btn.w, btn.h, e.x, e.y)){
                     currentFarm = btn.par.id
+                    changeFarmPG = false
                 }
             }  
         }
     }
     //help btn
-    if(btnCk(helpBtnX, helpBtnY, helpBtnW, helpBtnH, e.x, e.y)){
+    if(checkClick(helpBtnX, helpBtnY, helpBtnW, helpBtnH, e.x, e.y)){
         if(help) help = false
         else{help = true}
     }
