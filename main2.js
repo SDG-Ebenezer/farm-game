@@ -1,11 +1,9 @@
 /****CANVAS VARS/ETC. */
-var canvasWidth = 800
-var canvasHeight = 700
 var canvas = document.getElementById('gameCanvas')
 canvas.focus()
 ctx = canvas.getContext("2d")
-canvas.height = canvasHeight
-canvas.width = canvasWidth
+canvas.height = 700
+canvas.width = 800
 //
 var iconSize = canvas.width * 3/70
 //
@@ -17,6 +15,9 @@ var mouseActive = true
 var selectedCrop
 //market
 var market = false // t/f
+var marketBtnX = canvas.width - iconSize
+var marketBtnY = canvas.height - iconSize
+var marketBtnW = marketBtnH = iconSize
 //
 var changeFarmPG = false //
 //help
@@ -60,7 +61,7 @@ var bsBtnY = canvas.height - bsBtnH
 //land
 var lr, lg, lb
 var partOf = 10 // each square is 1/<partOf> of the canvas size (e.g. if partOf is 20, then land size is 1/20)
-var landSize = canvasHeight/partOf
+var landSize = canvas.height/partOf
 var landX = landSize * 2
 var landY = 0
 //
@@ -216,8 +217,8 @@ function createLand(){
             var landChunk = new land(landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
             farms[k].landL.push(landChunk)
             //calculate x,y
-            if(landX + landSize <= canvasWidth){
-                if(landY + landSize >= canvasHeight){
+            if(landX + landSize <= canvas.width){
+                if(landY + landSize >= canvas.height){
                     landX += landSize
                     landY = 0
                 }
@@ -245,8 +246,8 @@ function newFarmLand(){
         var landChunk = new land(landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
         farms[farms.length - 1].landL.push(landChunk)
         //calculate x,y
-        if(landX + landSize <= canvasWidth){
-            if(landY + landSize >= canvasHeight){
+        if(landX + landSize <= canvas.width){
+            if(landY + landSize >= canvas.height){
                 landX += landSize
                 landY = 0
             }
@@ -267,7 +268,6 @@ function newFarmLand(){
 function drawLand(){
     for(let z = 0; z < farms[currentFarm].landL.length; z++){
         farms[currentFarm].landL[z].draw()
-        console.log(farms[currentFarm].landL[z])
     }
 }
 //change farm btn
@@ -302,7 +302,7 @@ class farmBtn{
     }
 }
 function drawFarms(){
-    ctx.fillStyle = '#00000066'
+    ctx.fillStyle = '#00000099'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     for(let i in farmBtns){
         farmBtns[i].draw()
@@ -315,7 +315,7 @@ function showMoney(){
     let fontPadding = 10
     let rectH = fontSize + fontPadding * 2
     let rectX = 0
-    let rectY = canvasHeight - rectH
+    let rectY = canvas.height - rectH
     //RECT
     ctx.fillStyle = '#000000aa'
     ctx.fillRect(rectX, rectY, landSize * 2, rectH)
@@ -359,19 +359,7 @@ for(let i = 0; i < Object.keys(plantIDs).length; i++){
 function drawMenu(){
     //Menu
     ctx.fillStyle = 'black'
-    ctx.fillRect(0, 0, menuWidth, canvasHeight)
-    //Get selected crop
-    document.onclick = (e)=>{
-        if(!market){    
-            for(let i in menuOptionList){
-                let option = menuOptionList[i]
-                if(e.x >= option.x && e.x <= option.x + option.w &&
-                    e.y >= option.y && e.y <= option.y + option.h){
-                        selectedCrop = option.pId
-                }
-            }
-        }
-    }
+    ctx.fillRect(0, 0, menuWidth, canvas.height)
 }
 function drawMenuOptions(){
     for(let i in menuOptionList){
@@ -383,7 +371,7 @@ function drawMenuOptions(){
 /****MARKET */
 function marketContent(){
     ctx.fillStyle = '#111'
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
     showMoney()
     drawSellAmountInput()
     displayAmountTyped()
@@ -440,19 +428,10 @@ for(let i = 0; i < Object.keys(plantIDs).length; i++){
 /**** */
 //market/home btn
 function drawMarketBtn(){
-    var x = canvasWidth - iconSize
-    var y = canvasHeight - iconSize
-    var w = h = iconSize
     let img = document.createElement('img')
     if(!market){img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Market.png'}
     else{img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/House.png'}
-    ctx.drawImage(img, x, y, w, h)
-    canvas.onclick = (e)=>{
-        if(e.x >= x && e.x <= x + w && e.y >= y && e.y <= y + h){
-            if(market) market = false
-            else market = true
-        }
-    }
+    ctx.drawImage(img, marketBtnX, marketBtnY, marketBtnW, marketBtnH)
 }
 
 /**** INPUTS/ETC */
@@ -654,13 +633,13 @@ function bsBtn(){
     let img = document.createElement('img')
     if(sellNBuy) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/buy.png'
     else if(sellNBuy == false) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/sell.png'
-    ctx.drawImage(img, bsBtnX, bsBtnY)
+    ctx.drawImage(img, bsBtnX - bsBtnW, bsBtnY, bsBtnW * 2, bsBtnH)
 }
 
 /**** HELP BTN */
 function helpF(){
     //background
-    ctx.fillStyle = '#00000066'
+    ctx.fillStyle = '#00000099'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     //text
     /*
@@ -752,52 +731,79 @@ function checkClick(x, y, w, h, mx, my){
 canvas.onmousedown = (e)=>{
     if(!help){
         //not market
-        if(!market && !changeFarmPG){
-            for(let i in farms[currentFarm].landL){
-                let Sland = farms[currentFarm].landL[i]
-                if(checkClick(Sland.x, Sland.y, Sland.size, Sland.size, e.x, e.y)){
-                    //clear land
-                    if(Sland.status == landStatus[0] && money - 100 >= 0){
-                        if(otherKeys.shift){
-                            for(var j in farms[currentFarm].landL){
-                                Sland = farms[currentFarm].landL[j]
-                                if(money - 100 >= 0 && Sland.status == 'uncleared'){
-                                    Sland.status = landStatus[1]
-                                    money -= 100
+        if(!market){
+            if(!changeFarmPG){
+                for(let i in farms[currentFarm].landL){
+                    let Sland = farms[currentFarm].landL[i]
+                    if(checkClick(Sland.x, Sland.y, Sland.size, Sland.size, e.x, e.y)){
+                        //clear land
+                        if(Sland.status == landStatus[0] && money - 100 >= 0){
+                            if(otherKeys.shift){
+                                for(var j in farms[currentFarm].landL){
+                                    Sland = farms[currentFarm].landL[j]
+                                    if(money - 100 >= 0 && Sland.status == 'uncleared'){
+                                        Sland.status = landStatus[1]
+                                        money -= 100
+                                    }
                                 }
                             }
-                        }
-                        else{
-                            Sland.status = landStatus[1]
-                            money -= 100
-                            Sland.g = random(30, 80)
-                        }
-                    }
-                    //plant
-                    else if(Sland.status == landStatus[1] && selectedCrop != null){
-                        if(otherKeys.shift){
-                            for(var j in farms[currentFarm].landL){
-                                Sland = farms[currentFarm].landL[j]
-                                if(selectedCrop.qty > 0 && Sland.status == 'cleared'){
-                                    plantCrop(Sland)
-                                }
+                            else{
+                                Sland.status = landStatus[1]
+                                money -= 100
+                                Sland.g = random(30, 80)
                             }
                         }
-                        else{
-                            plantCrop(Sland)
+                        //plant
+                        else if(Sland.status == landStatus[1] && selectedCrop != null){
+                            if(otherKeys.shift){
+                                for(var j in farms[currentFarm].landL){
+                                    Sland = farms[currentFarm].landL[j]
+                                    if(selectedCrop.qty > 0 && Sland.status == 'cleared'){
+                                        plantCrop(Sland)
+                                    }
+                                }
+                            }
+                            else{
+                                plantCrop(Sland)
+                            }
+                            
                         }
-                        
-                    }
-                    //harvest
-                    else if(Sland.status == landStatus[2]){
-                        if(otherKeys.shift){
-                            let checkCrop
-                            for(const crop of plantList.values()){ //
-                                if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
-                            } 
-                            for(let cropCC = 0; cropCC < plantList.length;){ //
-                                var crop = plantList[cropCC]
-                                if(checkCrop.kind == crop.kind && crop.cF == currentFarm){
+                        //harvest
+                        else if(Sland.status == landStatus[2]){
+                            if(otherKeys.shift){
+                                let checkCrop
+                                for(const crop of plantList.values()){ //
+                                    if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
+                                } 
+                                for(let cropCC = 0; cropCC < plantList.length;){ //
+                                    var crop = plantList[cropCC]
+                                    if(checkCrop.kind == crop.kind && crop.cF == currentFarm){
+                                        //Get yield
+                                        if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
+                                        else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
+                                        //1% chance of regrowing
+                                        if(random(1, 100) == 1){
+                                            checkCrop.status = 1
+                                            checkCrop.id.qty += checkCrop.id.maxYield
+                                        }
+                                        //
+                                        else{
+                                            //find land
+                                            for(const Sland of farms[currentFarm].landL.values()){
+                                                if(Sland.x == crop.x && Sland.y == crop.y) Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
+                                            }
+                                            plantList.splice(cropCC, 1)
+                                        }
+                                    }
+                                    else{cropCC++}
+                                }
+                            }
+                            else{
+                                let checkCrop
+                                for(const crop of plantList.values()){ //
+                                    if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
+                                } 
+                                if(checkCrop.cF == currentFarm){ //
                                     //Get yield
                                     if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
                                     else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
@@ -809,41 +815,23 @@ canvas.onmousedown = (e)=>{
                                     //
                                     else{
                                         //find land
-                                        for(const Sland of farms[currentFarm].landL.values()){
-                                            if(Sland.x == crop.x && Sland.y == crop.y) Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
+                                        Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
+                                        for(var z in plantList){
+                                            if(plantList[z] == checkCrop) plantList.splice(z, 1)
                                         }
-                                        plantList.splice(cropCC, 1)
-                                    }
-                                }
-                                else{cropCC++}
-                            }
-                        }
-                        else{
-                            let checkCrop
-                            for(const crop of plantList.values()){ //
-                                if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
-                            } 
-                            if(checkCrop.cF == currentFarm){ //
-                                //Get yield
-                                if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
-                                else if(checkCrop.status == checkCrop.id.status - 1) checkCrop.id.qty += checkCrop.id.minYield
-                                //1% chance of regrowing
-                                if(random(1, 100) == 1){
-                                    checkCrop.status = 1
-                                    checkCrop.id.qty += checkCrop.id.maxYield
-                                }
-                                //
-                                else{
-                                    //find land
-                                    Sland.status = (random(1, 100) <= 99) ? 'cleared' : 'uncleared' //1% chance of uncleared
-                                    for(var z in plantList){
-                                        if(plantList[z] == checkCrop) plantList.splice(z, 1)
                                     }
                                 }
                             }
                         }
-                    }
-                }  
+                    }  
+                }
+            }
+            //  
+            for(let i in menuOptionList){
+                let option = menuOptionList[i]
+                if(checkClick(option.x, option.y, option.w, option.h, e.x, e.y)){
+                    selectedCrop = option.pId
+                }
             }
         }
         //market
@@ -851,28 +839,40 @@ canvas.onmousedown = (e)=>{
             if(sellNBuy){
                 for(let i in sellBtnsList){
                     let btn = sellBtnsList[i]
-                    if(e.x >= btn.x && e.x <= btn.x + btn.w 
-                        && e.y >= btn.y && e.y <= btn.y + btn.h 
-                        && btn.btnID.qty > 0 && parseInt(quantity) != 0){
-                            if(parseInt(quantity) <= btn.btnID.qty){
-                                money += btn.btnID.profit * parseInt(quantity) ?? 1
-                                btn.btnID.qty -= parseInt(quantity)
-                            }
+                    if(checkClick(btn.x, btn.y, btn.w, btn.h, e.x, e.y) && btn.btnID.qty > 0 && parseInt(quantity) != 0){
+                        if(parseInt(quantity) <= btn.btnID.qty){
+                            money += btn.btnID.profit * parseInt(quantity) ?? 1
+                            btn.btnID.qty -= parseInt(quantity)
+                        }
                     }
                 }
             }
             else{
                 for(let i in buyBtnsList){
                     let btn = buyBtnsList[i]
-                    if(e.x >= btn.x && e.x <= btn.x + btn.w 
-                        && e.y >= btn.y && e.y <= btn.y + btn.h 
-                        && money - (btn.btnID.cost  * quantity) >= 0 && quantity != 0){
-                            btn.btnID.qty += parseInt(quantity)
-                            money -= btn.btnID.cost * quantity
-                            if(btn.par.pId.name == 'farm') newFarmLand() 
+                    if(checkClick(0, btn.y, btn.w, btn.h, e.x, e.y) && money - (btn.btnID.cost  * quantity) >= 0 && parseInt(quantity) != 0){
+                        btn.btnID.qty += parseInt(quantity)
+                        money -= btn.btnID.cost * quantity
+                        if(btn.par.pId.name == 'farm') newFarmLand() 
                     }
                 }
             }
+            //Display
+            for(let i in menuOptionList){
+                let option = menuOptionList[i]
+                if(checkClick(option.x, option.y, option.w, option.h, e.x, e.y)){
+                    selectedCrop = option.pId
+                }
+            }
+            //change display in market based on menu select
+            for(let i in displayList){
+                if(displayList[i].id == selectedCrop) currentDisplay = i
+            } 
+        }
+        //market btn
+        if(checkClick(marketBtnX, marketBtnY, marketBtnW, marketBtnH, e.x, e.y)){
+            if(market) market = false
+            else market = true
         }
         //input
         if(checkClick(inputx, inputy, inputw, inputh, e.x, e.y)){
@@ -906,6 +906,7 @@ canvas.onmousedown = (e)=>{
                 }
             }  
         }
+
     }
     //help btn
     if(checkClick(helpBtnX, helpBtnY, helpBtnW, helpBtnH, e.x, e.y)){
