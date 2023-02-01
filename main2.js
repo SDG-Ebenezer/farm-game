@@ -242,7 +242,7 @@ function newFarmLand(){
     landX = landSize * 2
     landY = 0
     for(let j = 0; j < partOf ** 2 - partOf; j++){
-        var landChunk = new land(landSize, landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
+        var landChunk = new land(landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
         farms[farms.length - 1].landL.push(landChunk)
         //calculate x,y
         if(landX + landSize <= canvasWidth){
