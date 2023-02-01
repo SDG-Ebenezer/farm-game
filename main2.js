@@ -631,8 +631,8 @@ setInterval(()=>{
 /**** BUY/SELL BTN */
 function bsBtn(){
     let img = document.createElement('img')
-    if(sellNBuy) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/buy.png'
-    else if(sellNBuy == false) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/sell.png'
+    if(sellNBuy) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Buy.png'
+    else if(sellNBuy == false) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Sell.png'
     ctx.drawImage(img, bsBtnX - bsBtnW, bsBtnY, bsBtnW * 2, bsBtnH)
 }
 
