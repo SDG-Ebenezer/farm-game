@@ -897,16 +897,12 @@ canvas.onmousedown = (e)=>{
         }
         //change farm
         if(changeFarmPG){
-            let sFarm
             for(const btn of farmBtns.values()){
-                if(e.x >= btn.x && e.x <= btn.x + btn.w && e.y >= btn.y && e.y <= btn.y + btn.h){
-                    sFarm = btn.par.id
+                if(btnCk(btn.x, btn.y, btn.w, btn.h, e.x, e.y)){
+                    currentFarm = btn.par.id
+                    changeFarmPG = false
                 }
-            }
-            if(sFarm != null){
-                currentFarm = sFarm
-                changeFarmPG = false
-            }
+            }  
         }
     }
     //help btn
