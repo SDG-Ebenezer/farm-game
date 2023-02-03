@@ -75,8 +75,16 @@ var optionSize = menuWidth * 2/3
 var farmNum = 2 //start out num
 var currentFarm = 0
 
-//
+//history
 const history = []
+var hsty = false
+var hstyScrollable = {
+    up : false,
+    down : false
+}
+var historyBtnW = historyBtnH = iconSize
+var historyBtnX = canvas.width - historyBtnW
+var historyBtnY = canvas.height - (historyBtnH * 3)
 
 /****GET RANDOM NUM */
 function random(min, max){
@@ -385,6 +393,7 @@ function marketContent(){
     drawSellAmountInput()
     displayAmountTyped()
     bsBtn()
+
     if(sellNBuy){
         for(let i in menuOptionList){
             let produce = menuOptionList[i]
@@ -402,6 +411,12 @@ function marketContent(){
             buyBtnsList[i].draw()
         }
     }
+
+    //history
+    if(hsty){
+        historyF()
+    }
+    historyBtn()
 }
 
 /**** SELL */
@@ -650,16 +665,48 @@ function helpF(){
     //background
     ctx.fillStyle = '#00000099'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    //text
-    /*
-    const para = document.createElement('p')
-    para.innerHTML = 'Hello!!!!!!!!'
-    */
 }
 function helpBtn(){
     let img = document.createElement('img')
     img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Help.png'
     ctx.drawImage(img, helpBtnX, helpBtnY, helpBtnW, helpBtnH)
+}
+/**** HISTORY BTN */
+function historyF(){
+    //text
+    let titleTextSize = 30
+    let textSize = 20
+    let textPadding = 20
+    let textSpacing = 1.5
+    let historyBackgroundColor = '#000000ce'
+
+    //background
+    ctx.fillStyle = historyBackgroundColor
+    ctx.fillRect(0, titleTextSize + textPadding, canvas.width, canvas.height)
+
+    ctx.save()
+    ctx.translate(0, titleTextSize + textPadding * 2.5)
+
+    ctx.fillStyle = '#eee'
+    ctx.font = `${textSize}px Trebuchet MS`
+    for(let i in history){
+        ctx.fillText(`${history[i][0]}`, textPadding, textSize * history[i][1] * textSpacing)
+    }
+    
+    ctx.restore()
+
+    ctx.fillStyle = historyBackgroundColor
+    ctx.fillRect(0, 0, canvas.width, titleTextSize + textPadding)
+    ctx.fillStyle = 'white'
+    ctx.font = `bold ${titleTextSize}px Trebuchet MS`
+    ctx.fillText('Transaction History:', textPadding, titleTextSize + textPadding/2)
+    
+
+}
+function historyBtn(){
+    let img = document.createElement('img')
+    img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/History.png'
+    ctx.drawImage(img, historyBtnX, historyBtnY, historyBtnW, historyBtnH)
 }
 
 /****GAME TICK */
@@ -679,7 +726,7 @@ function plantCrop(Sland){
         }
     }
 }
-/****MOUSE HANDLER */
+/**** EVENT HANDLER */
 var otherKeys = {
     shift : false,
 }
@@ -734,12 +781,36 @@ window.onkeyup = (e)=>{
     		otherKeys.shift = false
     }
 }
+canvas.onwheel = (e)=>{
+    let scrollValue = (e.deltaY > 0)? -1 : 1
+    console.log(history[0], scrollValue)
+    
+    if(history.length > 0){
+        if(history[0][1] >= 0){
+            hstyScrollable.up = false
+        }
+        else{hstyScrollable.up = true}
+        
+        if(history[history.length-1][1] <= 0){
+            hstyScrollable.down = false
+        }
+        else{hstyScrollable.down = true}
+    }
+    
+    if(hsty){
+        if(scrollValue > 0 && hstyScrollable.up || (scrollValue < 0 && hstyScrollable.down)){
+            for(let i in history){
+                history[i][1] += scrollValue
+            }
+        }
+    }
+}
 function checkClick(x, y, w, h, mx, my){
     if(mx >= x && mx <= x + w && my >= y && my <= y + h) return true
 }
 canvas.onmousedown = (e)=>{
     if(!help){
-        //not market
+        /*** NOT MARKET **/
         if(!market){
             if(!changeFarmPG){
                 for(let i in farms[currentFarm].landL){
@@ -840,87 +911,97 @@ canvas.onmousedown = (e)=>{
                     selectedCrop = option.pId
                 }
             }
+             
+            //change farm button
+            if(checkClick(cfbx, cfby, cfbw, cfbh, e.x, e.y)){
+                if(changeFarmPG) changeFarmPG = false
+                else if(!changeFarmPG) changeFarmPG = true
+            }
+            //change farm
+            if(changeFarmPG){
+                for(const btn of farmBtns.values()){
+                    if(checkClick(btn.x, btn.y, btn.w, btn.h, e.x, e.y)){
+                        currentFarm = btn.par.id
+                        changeFarmPG = false
+                    }
+                }  
+            }
         }
-        //market
+        /*** MARKET **/
         else if(market){
-            if(sellNBuy){
-                for(let i in sellBtnsList){
-                    let btn = sellBtnsList[i]
-                    if(checkClick(btn.x, btn.y, btn.w, btn.h, e.x, e.y) && btn.btnID.qty > 0 && parseInt(quantity) != 0){
-                        if(parseInt(quantity) <= btn.btnID.qty){
-                            money += btn.btnID.profit * parseInt(quantity) ?? 1
-                            btn.btnID.qty -= parseInt(quantity)
-                        }
-                        history.push(`T${gameTick} || Sold x${quantity} ${btn.par.pId.name} for $${btn.btnID.profit * quantity}.`)
-                    }
-                }
-            }
-            else{
-                for(let i in buyBtnsList){
-                    let btn = buyBtnsList[i]
-                    if(checkClick(0, btn.y, btn.w, btn.h, e.x, e.y) && money - (btn.btnID.cost  * quantity) >= 0 && parseInt(quantity) != 0){
-                        btn.btnID.qty += parseInt(quantity)
-                        money -= btn.btnID.cost * quantity
-                        if(btn.par.pId.name == 'farm'){
-                            for(let j = 0; j < parseInt(quantity); j++){
-                                if(farms.length < 80) newFarmLand()
+            //if history = true, disable the following
+            if(!hsty){
+                if(sellNBuy){
+                    for(let i in sellBtnsList){
+                        let btn = sellBtnsList[i]
+                        if(checkClick(btn.x, btn.y, btn.w, btn.h, e.x, e.y) && btn.btnID.qty > 0 && parseInt(quantity) != 0){
+                            if(parseInt(quantity) <= btn.btnID.qty){
+                                money += btn.btnID.profit * parseInt(quantity) ?? 1
+                                btn.btnID.qty -= parseInt(quantity)
                             }
+                            history.push([`T${gameTick} || Sold x${quantity} ${btn.par.pId.name} for $${btn.btnID.profit * quantity}.`, 
+                                        (history.length > 0)? history[history.length - 1][1] + 1 : 0])
                         }
-                        history.push(`T${gameTick} || Bought x${quantity} ${btn.par.pId.name} for $${btn.btnID.cost * quantity}.`)
                     }
                 }
-            }
-            //Display
-            for(let i in menuOptionList){
-                let option = menuOptionList[i]
-                if(checkClick(option.x, option.y, option.w, option.h, e.x, e.y)){
-                    selectedCrop = option.pId
-                    //change display in market based on menu select
-                    for(let i in displayList){
-                        if(displayList[i].id == selectedCrop) currentDisplay = parseInt(i)
-                    } 
+                else{
+                    for(let i in buyBtnsList){
+                        let btn = buyBtnsList[i]
+                        if(checkClick(0, btn.y, btn.w, btn.h, e.x, e.y) && money - (btn.btnID.cost  * quantity) >= 0 && parseInt(quantity) != 0){
+                            btn.btnID.qty += parseInt(quantity)
+                            money -= btn.btnID.cost * quantity
+                            if(btn.par.pId.name == 'farm'){
+                                for(let j = 0; j < parseInt(quantity); j++){
+                                    if(farms.length < 80) newFarmLand()
+                                }
+                            }
+                            history.push([`T${gameTick} || Bought x${quantity} ${btn.par.pId.name} for $${btn.btnID.cost * quantity}.`, 
+                                    (history.length > 0)? history[history.length - 1][1] + 1 : 0])
+                        }
+                    }
+                }
+                //Display
+                for(let i in menuOptionList){
+                    let option = menuOptionList[i]
+                    if(checkClick(option.x, option.y, option.w, option.h, e.x, e.y)){
+                        selectedCrop = option.pId
+                        //change display in market based on menu select
+                        for(let i in displayList){
+                            if(displayList[i].id == selectedCrop) currentDisplay = parseInt(i)
+                        } 
+                    }
+                }
+                //input
+                if(checkClick(inputx, inputy, inputw, inputh, e.x, e.y)){
+                    quantity = ''
+                    active = true
+                }
+                else{
+                    active = false
+                }
+                //Display, as in the big image and the current profit amount
+                if(checkClick(displayBtnX, displayBtnY, displayBtnW, displayBtnH, e.x, e.y)){
+                    currentDisplay += 1
+                    if(currentDisplay >= displayList.length) currentDisplay = 0
+                }
+                //sell/buy btn
+                if(checkClick(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
+                    if(sellNBuy) sellNBuy = false
+                    else if(sellNBuy == false) sellNBuy = true
                 }
             }
-
+            //history btn
+            if(checkClick(historyBtnX, historyBtnY, historyBtnW, historyBtnH, e.x, e.y) && market){
+                if(hsty) hsty = false
+                else{hsty = true}
+            }
+            else{hsty = false}
         }
         //market btn
         if(checkClick(marketBtnX, marketBtnY, marketBtnW, marketBtnH, e.x, e.y)){
             if(market) market = false
             else market = true
         }
-        //input
-        if(checkClick(inputx, inputy, inputw, inputh, e.x, e.y)){
-            quantity = ''
-            active = true
-        }
-        else{
-            active = false
-        }
-        //Display, as in the big image and the current profit amount
-        if(checkClick(displayBtnX, displayBtnY, displayBtnW, displayBtnH, e.x, e.y)){
-            currentDisplay += 1
-            if(currentDisplay >= displayList.length) currentDisplay = 0
-        }
-        //sell/buy btn
-        if(checkClick(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
-            if(sellNBuy) sellNBuy = false
-            else if(sellNBuy == false) sellNBuy = true
-        }
-        //change farm button
-        if(checkClick(cfbx, cfby, cfbw, cfbh, e.x, e.y) && !market){
-            if(changeFarmPG) changeFarmPG = false
-            else if(!changeFarmPG) changeFarmPG = true
-        }
-        //change farm
-        if(changeFarmPG){
-            for(const btn of farmBtns.values()){
-                if(checkClick(btn.x, btn.y, btn.w, btn.h, e.x, e.y)){
-                    currentFarm = btn.par.id
-                    changeFarmPG = false
-                }
-            }  
-        }
-
     }
     //help btn
     if(checkClick(helpBtnX, helpBtnY, helpBtnW, helpBtnH, e.x, e.y)){
@@ -928,7 +1009,9 @@ canvas.onmousedown = (e)=>{
         else{help = true}
     }
     else{help = false}
+        
 }
+
 /****UPDATE */
 createLand()
 setInterval(function(){
@@ -952,6 +1035,7 @@ setInterval(function(){
     }
     drawMarketBtn() //
     timeGrowth() // crop growth
+    //help
     if(help){
         helpF()
     }
