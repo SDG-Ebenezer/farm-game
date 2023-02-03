@@ -862,12 +862,13 @@ canvas.onmousedown = (e)=>{
                 let option = menuOptionList[i]
                 if(checkClick(option.x, option.y, option.w, option.h, e.x, e.y)){
                     selectedCrop = option.pId
+                    //change display in market based on menu select
+                    for(let i in displayList){
+                        if(displayList[i].id == selectedCrop) currentDisplay = parseInt(i)
+                    } 
                 }
             }
-            //change display in market based on menu select
-            for(let i in displayList){
-                if(displayList[i].id == selectedCrop) currentDisplay = i
-            } 
+
         }
         //market btn
         if(checkClick(marketBtnX, marketBtnY, marketBtnW, marketBtnH, e.x, e.y)){
@@ -884,8 +885,8 @@ canvas.onmousedown = (e)=>{
         }
         //Display, as in the big image and the current profit amount
         if(checkClick(displayBtnX, displayBtnY, displayBtnW, displayBtnH, e.x, e.y)){
-            parseInt(currentDisplay) += 1
-            if(parseInt(currentDisplay) > displayList.length - 1) currentDisplay = 0
+            currentDisplay += 1
+            if(currentDisplay >= displayList.length) currentDisplay = 0
         }
         //sell/buy btn
         if(checkClick(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
