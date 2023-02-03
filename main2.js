@@ -884,8 +884,8 @@ canvas.onmousedown = (e)=>{
         }
         //Display, as in the big image and the current profit amount
         if(checkClick(displayBtnX, displayBtnY, displayBtnW, displayBtnH, e.x, e.y)){
-            currentDisplay += 1
-            if(currentDisplay > displayList.length - 1) currentDisplay = 0
+            parseInt(currentDisplay) += 1
+            if(parseInt(currentDisplay) > displayList.length - 1) currentDisplay = 0
         }
         //sell/buy btn
         if(checkClick(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
