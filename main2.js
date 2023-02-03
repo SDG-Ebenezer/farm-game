@@ -92,11 +92,8 @@ class land{
         this.status = status 
         this.id = id
         this.rgb = 'rgb(0,0,0)'
-        /*
-        STATUS:  UNCLEARED -> CLEARED -> PLANTED
-        */
         this.draw = ()=>{
-            if(this.status == landStatus[0]){
+            if(this.status == 'uncleared'){
                 this.rgb = `rgb(3, ${this.g}, 30)`
             }
             else if(this.status == 'cleared'){
@@ -214,8 +211,16 @@ function createLand(){
     for(let k = 0; k < farmNum; k ++){
         farms.push(new farmOrganizer(k))
         for(let j = 0; j < partOf ** 2 - partOf; j++){
-            var landChunk = new land(landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
+            let landChunkStatus = (random(1, 100) == 1) ? 'cleared' : 'uncleared'
+            let landChunk = new land(landX, landY, landChunkStatus, j)
             farms[k].landL.push(landChunk)
+            /*
+            if(landChunkStatus == 'cleared'){ 
+                selectedCrop = Object.values(plantIDs)[random(0, Object.keys(plantIDs).length - 1)]
+                console.log(selectedCrop, landChunkStatus, farms[k].landL[farms[k].landL.length - 1].status)
+                plantCrop(farms[k].landL[farms[k].landL.length - 1])
+            }
+            */            
             //calculate x,y
             if(landX + landSize <= canvas.width){
                 if(landY + landSize >= canvas.height){
@@ -242,6 +247,7 @@ function newFarmLand(){
     farms.push(new farmOrganizer(farms.length))
     landX = landSize * 2
     landY = 0
+    //
     for(let j = 0; j < partOf ** 2 - partOf; j++){
         var landChunk = new land(landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
         farms[farms.length - 1].landL.push(landChunk)
@@ -295,9 +301,9 @@ class farmBtn{
             img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png'
             ctx.drawImage(img, this.x, this.y, this.w, this.h)
             //text
-            ctx.fillStyle = '#eee'
+            ctx.fillStyle = 'white'
             ctx.font = '20px Trebuchet MS'
-            ctx.fillText(`#${this.par.id + 1}`, this.x + this.w - 20, this.y + this.h)
+            ctx.fillText(`#${this.par.id + 1}`, this.x + this.w - 25, this.y + this.h, 25)
         }
     }
 }
@@ -770,13 +776,15 @@ canvas.onmousedown = (e)=>{
                         }
                         //harvest
                         else if(Sland.status == landStatus[2]){
+                            let checkCrop
+                            for(let i in plantList){ //
+                                let c = plantList[i]
+                                if(c.x == Sland.x && c.y == Sland.y && c.cF == currentFarm) checkCrop = c
+                            } 
+                            //
                             if(otherKeys.shift){
-                                let checkCrop
-                                for(const crop of plantList.values()){ //
-                                    if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
-                                } 
                                 for(let cropCC = 0; cropCC < plantList.length;){ //
-                                    var crop = plantList[cropCC]
+                                    let crop = plantList[cropCC]
                                     if(checkCrop.kind == crop.kind && crop.cF == currentFarm){
                                         //Get yield
                                         if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
@@ -799,10 +807,6 @@ canvas.onmousedown = (e)=>{
                                 }
                             }
                             else{
-                                let checkCrop
-                                for(const crop of plantList.values()){ //
-                                    if(crop.x == Sland.x && crop.y == Sland.y) checkCrop = crop
-                                } 
                                 if(checkCrop.cF == currentFarm){ //
                                     //Get yield
                                     if(checkCrop.status == checkCrop.id.status) checkCrop.id.qty += checkCrop.id.maxYield
@@ -853,7 +857,11 @@ canvas.onmousedown = (e)=>{
                     if(checkClick(0, btn.y, btn.w, btn.h, e.x, e.y) && money - (btn.btnID.cost  * quantity) >= 0 && parseInt(quantity) != 0){
                         btn.btnID.qty += parseInt(quantity)
                         money -= btn.btnID.cost * quantity
-                        if(btn.par.pId.name == 'farm') newFarmLand() 
+                        if(btn.par.pId.name == 'farm'){
+                            for(let j = 0; j < parseInt(quantity); j++){
+                                if(farms.length < 80) newFarmLand()
+                            }
+                        }
                     }
                 }
             }
