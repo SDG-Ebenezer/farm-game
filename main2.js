@@ -75,6 +75,9 @@ var optionSize = menuWidth * 2/3
 var farmNum = 2 //start out num
 var currentFarm = 0
 
+//
+const history = []
+
 /****GET RANDOM NUM */
 function random(min, max){
     return Math.round(Math.random() * (max-min)) + min
@@ -848,6 +851,7 @@ canvas.onmousedown = (e)=>{
                             money += btn.btnID.profit * parseInt(quantity) ?? 1
                             btn.btnID.qty -= parseInt(quantity)
                         }
+                        history.push(`T${gameTick} || Sold x${quantity} ${btn.par.pId.name} for $${btn.btnID.profit * quantity}.`)
                     }
                 }
             }
@@ -862,6 +866,7 @@ canvas.onmousedown = (e)=>{
                                 if(farms.length < 80) newFarmLand()
                             }
                         }
+                        history.push(`T${gameTick} || Bought x${quantity} ${btn.par.pId.name} for $${btn.btnID.cost * quantity}.`)
                     }
                 }
             }
