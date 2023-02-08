@@ -694,10 +694,10 @@ function cursor(x, y){
     let w = h = 20
     let img = document.createElement('img')
     if((selectedCrop!=null)? selectedCrop.qty : -1 > 0 && !market && !help){
-        img.src = `file:///C:/Users/User/Desktop/FarmGame/Pictures/Cursor/${selectedCrop.name}.png` 
+        img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/${selectedCrop.name}.png` 
     }
     else{
-        img.src = `file:///C:/Users/User/Desktop/FarmGame/Pictures/Cursor/Crosshair.png`
+        img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/Crosshair.png`
     }
     ctx.drawImage(img, x - w/2, y - h/2, w, h)
 }
