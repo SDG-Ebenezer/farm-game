@@ -2,14 +2,22 @@
 var canvas = document.getElementById('gameCanvas')
 canvas.focus()
 ctx = canvas.getContext("2d")
-canvas.height = 700
-canvas.width = 800
+
+var fps = 10
+var gameTickTime = 1000 //ms
+
+canvas.height = window.innerHeight
+canvas.width = window.innerWidth
 //
-var iconSize = canvas.width * 3/70
+var iconSize = (! canvas.height/10 > 40) ? canvas.height/10 : 40
 //
 var gameTick = 0 //
 
 var money = 1000 //
+
+//menu
+var menuWidth = canvas.height/5
+var optionSize = menuWidth - 25
 
 var mouseActive = true
 var selectedCrop
@@ -32,20 +40,28 @@ cursorStatus = cursorStatusOptions[1]
 var quantity = "1"
 var active = false //
 
-var inputw = 200 //
-var inputh = 30 //
-var inputx = 10 //
-var inputy = canvas.height - inputh - 45 //
+var inputw = canvas.width * 2/7 //
+var inputh = canvas.height/20 //
+var inputx = canvas.height * 1/80 //
+var inputy = optionSize * 5 //
+
+var inputTextSize = inputh
 
 //
 landStatus = ['uncleared', 'cleared', 'planted']
 //
 var currentDisplay = 0
+//DISPLAY
+var displayPadding = 10
+var displayH = canvas.height/2
+var displayW = canvas.width/25
+var displayX = (menuWidth * 2) + (displayPadding * 2)
+var displayY = displayPadding
 //btn
-var displayBtnW = 200
 var displayBtnH = 40
-var displayBtnX = canvas.width - 400
-var displayBtnY = 200 + 5
+var displayBtnW = displayH + displayW
+var displayBtnX = displayX
+var displayBtnY = displayY + displayH
 //change farm
 var cfbw = cfbh = iconSize
 var cfbx = canvas.width - cfbw
@@ -59,17 +75,13 @@ var bsBtnX = canvas.width - iconSize - bsBtnW
 var bsBtnY = canvas.height - bsBtnH
 
 //land
-var lr, lg, lb
-var partOf = 10 // each square is 1/<partOf> of the canvas size (e.g. if partOf is 20, then land size is 1/20)
-var landSize = canvas.height/partOf
-var landX = landSize * 2
+var landNum = 64
+var landPerLine = 8// each square is 1/<landPerLine> of the canvas size (e.g. if landPerLine is 20, then land size is 1/20)
+var landSize = (canvas.height > canvas.width) ? canvas.width/landPerLine : canvas.height/landPerLine
+var landX = menuWidth
 var landY = 0
 //
 var showLandId = false //
-
-//menu
-var menuWidth = landSize * 2
-var optionSize = menuWidth * 2/3
 
 //farms
 var farmNum = 2 //start out num
@@ -103,6 +115,7 @@ sellBtnsList = []
 buyList = []
 buyBtnsList = []
 displayList = []
+
 //classes
 class land{
     constructor(x, y, status, id){
@@ -202,7 +215,7 @@ class menuOption{
                 ctx.fillRect(this.x, this.y, this.w, this.h)
             }
             ctx.fillStyle = 'white'
-            ctx.font = '20px Trebuchet MS'
+            ctx.font = `bold ${optionSize/4}px Trebuchet MS`
             ctx.fillText(pId.qty, this.x + this.w, this.y + this.h)
         }
     }
@@ -212,10 +225,10 @@ class sellBtn{
         this.par = par
         this.btnID = btnID
         this.message = message
-        this.x = par.x + (landSize * 2)
-        this.y = par.y
-        this.w = par.w * 2
-        this.h = par.h
+        this.x = this.par.x + menuWidth
+        this.y = this.par.y
+        this.w = menuWidth
+        this.h = this.par.h
         this.color = '#222'
         this.draw = ()=>{   
             var fontPaddingW = 10   
@@ -224,7 +237,7 @@ class sellBtn{
             ctx.fillRect(this.x, this.y + 10, this.w, this.h - 40)
             //FONT
             ctx.fillStyle = 'white'
-            ctx.font = '20px Trebuchet MS'
+            ctx.font = `bold ${this.w/7.5}px Trebuchet MS`
             ctx.fillText(`Sell x${(quantity == "") ? 0 : quantity} ${this.message}`, this.x + fontPaddingW, this.y + fontPaddingH, this.w)
             if(quantity > this.btnID.qty) this.color = '#cc0700'
             else{this.color = '#222'}
@@ -276,7 +289,7 @@ class buyBtn{
 
         this.w = 400
         this.h = 100
-        this.x = this.par.x + 200
+        this.x = this.par.x + menuWidth * 2
         this.y = this.par.y
         this.color = '#313131'
         this.draw = ()=>{   
@@ -301,31 +314,32 @@ class display{
         this.onc = id.onColor
         this.min = id.minYield
 
-        this.height = canvas.height/3
-        this.width = canvas.width/25
-        this.x = canvas.width - 400
-        this.y = 10
+        this.height = displayH
+        this.width = displayW
+        this.x = displayX
+        this.y = displayY
 
         this.src = this.id.mainImgSrc
         this.max = this.id.profit
 
         this.cur = cur ?? Math.round(this.max)//current value
     	this.draw = ()=>{
+            
             ctx.save()
             ctx.translate(this.x, this.y)
             ctx.fillStyle = '#212121'
-            ctx.fillRect(0 + this.width + 15, 0 + 15, 0, 0)
+            ctx.fillRect(this.width + displayY, displayY, 0, 0)
             //
-            let imgSize = 200
-            var fontPadding = 10
-            var fontSize = 20
-            var textX = 0
-            var textY = imgSize
+            let imgSize = this.height
+            let fontPadding = 10
+            let fontSize = 20
+            let textX = 0
+            let textY = imgSize
             let img = document.createElement('img')
             img.src = this.src
             ctx.drawImage(img, 0, 0, imgSize, imgSize)
             //
-            ctx.fillStyle = '#000000aa'
+            ctx.fillStyle = '#0000002e'
             ctx.fillRect(textX, textY, imgSize, -fontSize - fontPadding)
             ctx.fillStyle = 'white'
             ctx.font = `${fontSize}px Trebuchet MS`
@@ -410,7 +424,7 @@ function generateLand(){
     //farm 
     for(let k = 0; k < farmNum; k ++){
         farms.push(new farmOrganizer(k))
-        for(let j = 0; j < partOf ** 2 - partOf; j++){
+        for(let j = 0; j < landNum; j++){
             let landChunkStatus = (random(1, 100) == 1) ? 'cleared' : 'uncleared'
             let landChunk = new land(landX, landY, landChunkStatus, j)
             farms[k].landL.push(landChunk)
@@ -432,7 +446,7 @@ function generateLand(){
                 }
             }
         }
-        landX = landSize * 2
+        landX = menuWidth
         landY = 0
     }
     //farm btn
@@ -448,7 +462,7 @@ function generateNewLand(){
     landX = landSize * 2
     landY = 0
     //
-    for(let j = 0; j < partOf ** 2 - partOf; j++){
+    for(let j = 0; j < landNum; j++){
         var landChunk = new land(landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
         farms[farms.length - 1].landL.push(landChunk)
         //calculate x,y
@@ -496,18 +510,18 @@ function drawFarms(){
 }
 /****MONEY */
 function showMoney(){
-    let fontSize = 30
+    let fontSize = menuWidth/4
     let fontPadding = 10
     let rectH = fontSize + fontPadding * 2
     let rectX = 0
     let rectY = canvas.height - rectH
     //RECT
     ctx.fillStyle = '#000000aa'
-    ctx.fillRect(rectX, rectY, landSize * 2, rectH)
+    ctx.fillRect(rectX, rectY, menuWidth, rectH)
     //FONT
     ctx.fillStyle = 'white'
     ctx.font = `${fontSize}px Trebuchet MS`
-    ctx.fillText(`$${money}`, rectX + fontPadding, rectY + fontPadding + fontSize, landSize)
+    ctx.fillText(`$${money}`, rectX + fontPadding, rectY + fontPadding + fontSize, menuWidth)
 }
 /****MENU */
 function drawMenu(){
@@ -566,7 +580,7 @@ function drawMarketBtn(){
 function mInputDisplay(){
 	var fontPadding = 2
 	ctx.fillStyle = 'white'
-    ctx.font = 'bold 30px Trebuchet MS'
+    ctx.font = `${inputTextSize}px Trebuchet MS`
     ctx.fillText(`${quantity}`, inputx + fontPadding, inputy + inputh - fontPadding, inputw - fontPadding)
 }
 function type(num){
@@ -578,14 +592,14 @@ function type(num){
 function drawMInputDisplay(){
     var fontPadding = 2
     ctx.fillStyle = 'white'
-    ctx.font = '20px Trebuchet MS'
+    ctx.font = `${inputTextSize * 2/3}px Trebuchet MS`
     ctx.fillText('Custom Quantity:', inputx + fontPadding, inputy - (fontPadding * 3), inputw - fontPadding)
     if(active) ctx.fillStyle = '#999'
     else ctx.fillStyle = '#1f1f1f'
     ctx.fillRect(inputx, inputy, inputw, inputh)
     if(quantity === ''){
         ctx.fillStyle = '#3f3f3f'
-        ctx.font = '20px Trebuchet MS'
+        ctx.font = `${inputTextSize}px Trebuchet MS`
         ctx.fillText('AMOUNT', inputx + fontPadding, inputy + inputh - fontPadding, inputw - fontPadding)
     }
 }
@@ -620,7 +634,7 @@ setInterval(()=>{
         }
         display.cur = display.id.profit
     }
-}, 1000)
+}, gameTickTime * 5)
 /**** BUY/SELL BTN */
 function bsBtn(){
     let img = document.createElement('img')
@@ -693,11 +707,11 @@ function plantCrop(Sland){
 function cursor(x, y){
     let w = h = 20
     let img = document.createElement('img')
-    if(((selectedCrop!=null)? selectedCrop.qty : -1) > 0 && !market && !help){
-        img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/${selectedCrop.name}.png` 
+    if(((selectedCrop!=null)? selectedCrop.qty : -1 > 0) && !market && !help){
+        img.src = `file:///C:/Users/User/Desktop/FarmGame/Pictures/Cursor/${selectedCrop.name}.png` 
     }
     else{
-        img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/Crosshair.png`
+        img.src = `file:///C:/Users/User/Desktop/FarmGame/Pictures/Cursor/Crosshair.png`
     }
     ctx.drawImage(img, x - w/2, y - h/2, w, h)
 }
@@ -790,7 +804,7 @@ canvas.onwheel = (e)=>{
 function checkClick(x, y, w, h, mx, my){
     if(mx >= x && mx <= x + w && my >= y && my <= y + h) return true
 }
-canvas.onmousedown = (e)=>{
+canvas.ontouch = canvas.onmousedown = (e)=>{
     if(!help){
         /*** NOT MARKET **/
         if(!market){
@@ -885,15 +899,15 @@ canvas.onmousedown = (e)=>{
                         }
                     }  
                 }
-            }
-            //  
-            for(let i in menuOptionList){
-                let option = menuOptionList[i]
-                if(checkClick(option.x, option.y, option.w, option.h, e.x, e.y)){
-                    selectedCrop = option.pId
+            
+                //  
+                for(let i in menuOptionList){
+                    let option = menuOptionList[i]
+                    if(checkClick(option.x, option.y, option.w, option.h, e.x, e.y)){
+                        selectedCrop = option.pId
+                    }
                 }
             }
-             
             //change farm button
             if(checkClick(cfbx, cfby, cfbw, cfbh, e.x, e.y)){
                 if(changeFarmPG) changeFarmPG = false
@@ -990,8 +1004,7 @@ canvas.onmousedown = (e)=>{
         if(help) help = false
         else{help = true}
     }
-    else{help = false}
-        
+    else{help = false}    
 }
 
 /****UPDATE */
@@ -1049,8 +1062,8 @@ setInterval(function(){
     helpBtn()
 
     cursor(cursorX, cursorY)
-}, 50)
+}, 1000/fps)
 /****GAME TICK */
 setInterval(()=>{
     gameTick += 1
-}, 1000)
+}, gameTickTime)
