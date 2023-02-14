@@ -3,6 +3,49 @@ var canvas = document.getElementById('gameCanvas')
 canvas.focus()
 ctx = canvas.getContext("2d")
 
+/****PLANT */
+const plantIDs = {
+    corn : {
+        name : 'Corn',
+        profit : 25,
+        cost : 25, 
+        qty : 1,
+        status : 8,
+        gTime : 30,
+        maxYield : 6,
+        minYield : 5,
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Corn%20Texture/pixil-frame-0.png', 
+        offColor : '#ad9655', 
+        onColor : '#fcba03', 
+    },
+    potato : {
+        name : 'Potato',
+        profit : 5,
+        cost : 5,  
+        qty : 1,
+        status : 7,
+        gTime : 5,
+        maxYield : 4,
+        minYield : 1,
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Potato%20Texture/pixil-frame-0.png', 
+        offColor : '#5f8a50', 
+        onColor : '#34ab09', 
+    },
+    carrot : {
+        name : 'Carrot',
+        profit : 15,
+        cost : 15,   
+        qty : 1,
+        status : 7,
+        gTime : 15,
+        maxYield : 2,
+        minYield : 3,
+        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Carrot%20Texture/pixil-frame-0.png',
+        offColor : '#dba55a', 
+        onColor : '#e68702',
+    },  
+}
+
 var fps = 10
 var gameTickTime = 1000 //ms
 
@@ -43,7 +86,7 @@ var active = false //
 var inputw = canvas.width * 2/7 //
 var inputh = canvas.height/20 //
 var inputx = canvas.height * 1/80 //
-var inputy = optionSize * 5 //
+var inputy = optionSize * (Object.keys(plantIDs).length + 2) //
 
 var inputTextSize = inputh
 
@@ -84,7 +127,7 @@ var landY = 0
 var showLandId = false //
 
 //farms
-var farmNum = 2 //start out num
+var farmNum = 1 //start out num
 var currentFarm = 0
 
 //history
@@ -251,7 +294,7 @@ class buyOption{
         this.pId = pId
 
         this.imgSrc = pId.mainImgSrc
-        this.size = canvas.width/10
+        this.size = canvas.height/8
         this.x = 0
         this.y = 0 + (this.size * this.id)
         this.drawMajorDisplay = ()=>{
@@ -289,25 +332,26 @@ class buyBtn{
 
         this.w = 400
         this.h = 100
-        this.x = this.par.x + menuWidth * 2
+        this.x = this.par.x + this.par.size * 2.5
         this.y = this.par.y
         this.color = '#313131'
         this.draw = ()=>{   
-            var fontPaddingW = 10   
-            var fontPaddingH = this.h/2   
+            let fontPaddingW = 10   
+            let fontPaddingH = this.h/2   
             ctx.save()
             ctx.translate(this.x, this.y)
             //FONT
             ctx.fillStyle = 'white'
             ctx.font = '20px Trebuchet MS'
-            ctx.fillText(`Buy x${(quantity == "") ? 0 : quantity} ${this.message} (Grand Cost: $${this.btnID.cost * quantity})`, 
+            let s = (quantity != 1) ? "s" : ""
+            ctx.fillText(`Buy x${(quantity == "") ? 0 : quantity} ${this.message}${s} (Grand Cost: $${this.btnID.cost * quantity})`, 
             fontPaddingW, fontPaddingH, this.w)
             ctx.restore()
         }
     }
 }
 class display{
-	constructor(id, cur){
+	constructor(id){
         this.id = id
 
     	this.offc = id.offColor
@@ -315,16 +359,15 @@ class display{
         this.min = id.minYield
 
         this.height = displayH
-        this.width = displayW
+        this.width = (displayW < 75)? displayW : 75
         this.x = displayX
         this.y = displayY
 
         this.src = this.id.mainImgSrc
         this.max = this.id.profit
 
-        this.cur = cur ?? Math.round(this.max)//current value
+        this.cur = random(this.min, this.max)//current value
     	this.draw = ()=>{
-            
             ctx.save()
             ctx.translate(this.x, this.y)
             ctx.fillStyle = '#212121'
@@ -356,49 +399,6 @@ class display{
     }
 }
 
-/****PLANT */
-const plantIDs = {
-    corn : {
-        name : 'Corn',
-        profit : 25,
-        cost : 25, 
-        qty : 1,
-        status : 8,
-        gTime : 30,
-        maxYield : 6,
-        minYield : 5,
-        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Corn%20Texture/pixil-frame-0.png', 
-        offColor : '#ad9655', 
-        onColor : '#fcba03', 
-    },
-    potato : {
-        name : 'Potato',
-        profit : 5,
-        cost : 5,  
-        qty : 1,
-        status : 7,
-        gTime : 5,
-        maxYield : 4,
-        minYield : 1,
-        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Potato%20Texture/pixil-frame-0.png', 
-        offColor : '#5f8a50', 
-        onColor : '#34ab09', 
-    },
-    carrot : {
-        name : 'Carrot',
-        profit : 15,
-        cost : 15,   
-        qty : 1,
-        status : 7,
-        gTime : 15,
-        maxYield : 2,
-        minYield : 3,
-        mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Carrot%20Texture/pixil-frame-0.png',
-        offColor : '#dba55a', 
-        onColor : '#e68702',
-    },  
-}
-
 //functions
 /****CROPS */
 function timeCropGrowth(){    
@@ -427,14 +427,7 @@ function generateLand(){
         for(let j = 0; j < landNum; j++){
             let landChunkStatus = (random(1, 100) == 1) ? 'cleared' : 'uncleared'
             let landChunk = new land(landX, landY, landChunkStatus, j)
-            farms[k].landL.push(landChunk)
-            /*
-            if(landChunkStatus == 'cleared'){ 
-                selectedCrop = Object.values(plantIDs)[random(0, Object.keys(plantIDs).length - 1)]
-                console.log(selectedCrop, landChunkStatus, farms[k].landL[farms[k].landL.length - 1].status)
-                plantCrop(farms[k].landL[farms[k].landL.length - 1])
-            }
-            */            
+            farms[k].landL.push(landChunk)  
             //calculate x,y
             if(landX + landSize <= canvas.width){
                 if(landY + landSize >= canvas.height){
@@ -451,10 +444,7 @@ function generateLand(){
     }
     //farm btn
     for(let f = 0; f < farms.length; f++){
-        let w = h = canvas.width/10
-        let x = (farms[f].id * w >= canvas.width) ? (farms[f].id * w) - canvas.width * (Math.floor((farms[f].id * w)/canvas.width)) : farms[f].id * w
-        let y = Math.floor(farms[f].id * w/canvas.width) * h
-        farmBtns.push(new farmBtn(x, y, w, h, farms[f]))
+        farmListPush(f)
     }
 }
 function generateNewLand(){
@@ -476,14 +466,17 @@ function generateNewLand(){
             }
         }
     }
-    let thing = farms[farms.length - 1].id
-    let w = h = canvas.width/10
-    farmBtns.push(new farmBtn((thing * w >= canvas.width) ? (thing * w) - canvas.width * (Math.floor((thing * w)/canvas.width)) : thing * w, 
-                Math.floor(thing * w/canvas.width) * h, 
-                w, 
-                h, 
-                farms[farms.length - 1]))
+    farmListPush(farms.length - 1)
     farmNum += 1
+}
+function farmListPush(i){
+    let w = h = canvas.height/8
+    let row = Math.floor(((i + 1) * w)/canvas.width) // # row
+    let x = ((i - row) - (row * Math.floor(canvas.width/w)) + ((row > 0)? 1 : 0)) * w
+    let y = row * h 
+    console.log(Math.round(x), y)
+    
+    farmBtns.push(new farmBtn(x, y, w, h, farms[i]))
 }
 function drawLand(){
     for(let z = 0; z < farms[currentFarm].landL.length; z++){
@@ -613,12 +606,12 @@ function drawBuyDisplay(){
 }
 //next display
 function displayBtn(){
-    var textSize = displayBtnW * 2/3
+    var textSize = displayBtnW/2
 
     ctx.fillStyle = '#555'
     ctx.fillRect(displayBtnX, displayBtnY, displayBtnW, displayBtnH)
-    ctx.fillStyle = 'white'
     
+    ctx.fillStyle = 'white'
     ctx.font = 'bold 20px Trebuchet MS'
     ctx.fillText('>> Next Demand >>', displayBtnX + displayBtnW/2 - textSize/2, displayBtnY + displayBtnH * 2/3, textSize)
 }
@@ -626,15 +619,19 @@ function displayBtn(){
 setInterval(()=>{
     for(let i in displayList){
         let display = displayList[i]
-        if(random(1,2) == 1 && display.id.profit + 1 <= display.max){
-            display.id.profit += 1
+        let chance = random(1, 2)
+        if(chance == 1 && display.cur + 1 <= display.max){
+            display.cur += 1
         }
-        else if(display.id.profit - 1 >= display.min){
-            display.id.profit -= 1
+        else if(chance == 2 && display.cur - 1 >= display.min){
+            display.cur -= 1
         }
-        display.cur = display.id.profit
+        else{
+            display.cur += 0
+        }
+        display.id.profit = display.cur
     }
-}, gameTickTime * 5)
+}, gameTickTime)
 /**** BUY/SELL BTN */
 function bsBtn(){
     let img = document.createElement('img')
@@ -708,10 +705,10 @@ function cursor(x, y){
     let w = h = 20
     let img = document.createElement('img')
     if(((selectedCrop!=null)? selectedCrop.qty : -1 > 0) && !market && !help){
-        img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/${selectedCrop.name}.png` 
+        img.src = `file:///C:/Users/User/Desktop/FarmGame/Pictures/Cursor/${selectedCrop.name}.png` 
     }
     else{
-        img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/Crosshair.png`
+        img.src = `file:///C:/Users/User/Desktop/FarmGame/Pictures/Cursor/Crosshair.png`
     }
     ctx.drawImage(img, x - w/2, y - h/2, w, h)
 }
@@ -798,6 +795,12 @@ canvas.onwheel = (e)=>{
             for(let i in history){
                 history[i][1] += scrollValue
             }
+        }
+    }
+    if(changeFarmPG){
+        for(let i in farmBtns){
+            let f = farmBtns[i]
+            f.y += scrollValue * 30
         }
     }
 }
@@ -915,7 +918,8 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
             }
             //change farm
             if(changeFarmPG){
-                for(const btn of farmBtns.values()){
+                for(let i in farmBtns){
+                    let btn = farmBtns[i]
                     if(checkClick(btn.x, btn.y, btn.w, btn.h, e.x, e.y)){
                         currentFarm = btn.par.id
                         changeFarmPG = false
@@ -1020,7 +1024,7 @@ function startGame(){
         buyList.push(new buyOption(i, Object.values(plantIDs)[i]))
     }
     buyList.push(new buyOption(buyList.length, {
-        name : 'farm',
+        name : 'Farm',
         cost : 10000,   
         qty : farmNum,
         mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png',
