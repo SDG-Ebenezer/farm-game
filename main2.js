@@ -46,85 +46,101 @@ const plantIDs = {
     },  
 }
 
+
 var fps = 10
 var gameTickTime = 1000 //ms
+var gameTick = 0 //
+var money = 1000 //
 
 canvas.height = window.innerHeight
 canvas.width = window.innerWidth
-//
+
 var iconSize = (! canvas.height/10 > 40) ? canvas.height/10 : 40
-//
-var gameTick = 0 //
-
-var money = 1000 //
-
-//menu
 var menuWidth = canvas.height/5
 var optionSize = menuWidth - 25
 
+var selectedCrop, marketBtnW, marketBtnH, marketBtnX, marketBtnY, helpBtnW, helpBtnH, helpBtnX,
+helpBtnY, inputw, inputh, inputx, inputy, inputTextSize, buyBtnY, maxBuyHeight, cfbw, cfbh, cfbx, cfby, 
+bsBtnX, bsBtnY, historyBtnX, historyBtnY, menuTextSize, widthMinus, landNum, landPerLine, landSize,
+displayPadding, displayH, displayW, displayX, displayY, displayBtnH, displayBtnW, displayBtnX, displayBtnY, 
+bsBtnW, bsBtnH
+
+//misc vars contained in here
+function stateVars(){
+    iconSize = (! canvas.height/10 > 40) ? canvas.height/10 : 40
+
+    menuWidth = canvas.height/5
+    optionSize = menuWidth - 25
+
+    marketBtnW = marketBtnH = iconSize
+    marketBtnX = canvas.width - iconSize
+    marketBtnY = canvas.height - iconSize
+
+    helpBtnW = helpBtnH = iconSize
+    helpBtnX = canvas.width - helpBtnW
+    helpBtnY = canvas.height - (helpBtnH * 2)
+
+    inputw = canvas.width * 2/7 //
+    inputh = canvas.height/20 //
+    inputx = canvas.width * 1/75
+    inputy = optionSize * (Object.keys(plantIDs).length + 2) //
+    inputTextSize = (inputh > 10)? inputh : 10
+
+    buyBtnY = canvas.height * 32/70
+
+    maxBuyHeight = canvas.height - buyBtnY - inputy
+
+    cfbw = cfbh = iconSize
+    cfbx = canvas.width - cfbw
+    cfby = canvas.height - (cfbh * 3)
+
+    bsBtnX = canvas.width - iconSize - bsBtnW
+    bsBtnY = canvas.height - bsBtnH
+
+    historyBtnX = canvas.width - historyBtnW
+    historyBtnY = canvas.height - (historyBtnH * 3)
+
+    menuTextSize = menuWidth
+    
+    widthMinus = canvas.width - menuWidth
+    landNum = 64
+    landPerLine = Math.floor(Math.sqrt(landNum))// each square is 1/<landPerLine> of the canvas size (e.g. if landPerLine is 20, then land size is 1/20)
+    landSize = Math.sqrt((widthMinus * canvas.height)/landNum)
+
+    displayPadding = 10
+    displayH = canvas.height/2
+    displayW = canvas.width/25
+    displayX = (menuWidth * 2) + (displayPadding * 2)
+    displayY = displayPadding
+    displayBtnH = canvas.height * 2/35
+    displayBtnW = displayH + displayW
+    displayBtnX = displayX
+    displayBtnY = displayY + displayH
+    bsBtnW = bsBtnH = iconSize
+}
+
 var mouseActive = true
-var selectedCrop
-//market
 var market = false // t/f
-var marketBtnX = canvas.width - iconSize
-var marketBtnY = canvas.height - iconSize
-var marketBtnW = marketBtnH = iconSize
-//
 var changeFarmPG = false //
-//help
 var help = false
-var helpBtnW = helpBtnH = iconSize
-var helpBtnX = canvas.width - helpBtnW
-var helpBtnY = canvas.height - (helpBtnH * 2)
+
 //
 cursorStatusOptions = ['clear', 'plant', 'harvest']
 cursorStatus = cursorStatusOptions[1]
+
 //input
 var quantity = "1"
 var active = false //
-
-var inputw = canvas.width * 2/7 //
-var inputh = canvas.height/20 //
-var inputx = canvas.height * 1/80 //
-var inputy = optionSize * (Object.keys(plantIDs).length + 2) //
-
-var inputTextSize = inputh
 
 //
 landStatus = ['uncleared', 'cleared', 'planted']
 //
 var currentDisplay = 0
-//DISPLAY
-var displayPadding = 10
-var displayH = canvas.height/2
-var displayW = canvas.width/25
-var displayX = (menuWidth * 2) + (displayPadding * 2)
-var displayY = displayPadding
-//btn
-var displayBtnH = 40
-var displayBtnW = displayH + displayW
-var displayBtnX = displayX
-var displayBtnY = displayY + displayH
-//change farm
-var cfbw = cfbh = iconSize
-var cfbx = canvas.width - cfbw
-var cfby = canvas.height - (cfbh * 3)
-//buy
-var buyBtnY = canvas.height * 32/70
-var maxBuyHeight = canvas.height - buyBtnY - inputy
-var sellNBuy = true //
-var bsBtnW = bsBtnH = iconSize
-var bsBtnX = canvas.width - iconSize - bsBtnW
-var bsBtnY = canvas.height - bsBtnH
 
-//land
-var landNum = 64
-var landPerLine = 8// each square is 1/<landPerLine> of the canvas size (e.g. if landPerLine is 20, then land size is 1/20)
-var landSize = (canvas.height > canvas.width) ? canvas.width/landPerLine : canvas.height/landPerLine
-var landX = menuWidth
-var landY = 0
+//buy
+var sellNBuy = true //
 //
-var showLandId = false //
+var showLandId = true //
 
 //farms
 var farmNum = 1 //start out num
@@ -138,8 +154,6 @@ var hstyScrollable = {
     down : false
 }
 var historyBtnW = historyBtnH = iconSize
-var historyBtnX = canvas.width - historyBtnW
-var historyBtnY = canvas.height - (historyBtnH * 3)
 
 /****GET RANDOM NUM */
 function random(min, max){
@@ -161,14 +175,18 @@ displayList = []
 
 //classes
 class land{
-    constructor(x, y, status, id){
-        this.size = landSize
-        this.x = x
-        this.y = y
-        this.g = random(50,80)
+    constructor(status, id){
         this.status = status 
         this.id = id
-        this.rgb = 'rgb(0,0,0)'
+
+        this.size = landSize
+        this.xcoordinator = Math.floor(this.id%(widthMinus/this.size))
+        this.ycoordinator = Math.floor((this.size * this.id)/widthMinus)// # row
+        this.x = this.xcoordinator * this.size + menuWidth
+        this.y = this.ycoordinator * this.size
+        
+        this.g = random(50,80)
+        this.rgb = ''
         this.draw = ()=>{
             if(this.status == 'uncleared'){
                 this.rgb = `rgb(3, ${this.g}, 30)`
@@ -182,7 +200,7 @@ class land{
             ctx.fillStyle = this.rgb
             ctx.fillRect(this.x, this.y, this.size, this.size)
             if(showLandId){
-                ctx.fillStyle = '#AAA'
+                ctx.fillStyle = '#aaaaaa'
                 ctx.font = '20px Trebuchet MS'
                 ctx.fillText(this.id, this.x, this.y + 20)
             }
@@ -196,18 +214,21 @@ class farmOrganizer{
     }
 }
 class plant{
-    constructor(x, y, plantTime, id, plantedLand, cF){
-        this.x = x
-        this.y = y
-
+    constructor(landId, plantTime, id, plantedLand, cF){
+        this.landId = landId
         this.id = id
         this.plantTime = plantTime + this.id.gTime
+        
+        this.cF = cF // current farm
+
+        this.x = farms[this.cF].landL[this.landId].x
+        this.y = farms[this.cF].landL[this.landId].y
 
         this.kind = this.id.name
         this.status = 1
         this.plantedLand = plantedLand
 
-        this.cF = cF // current farm
+
         this.draw = ()=>{
             let img = document.createElement('img')
             img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/${this.kind}%20Texture/pixil-frame-${this.status}.png`
@@ -237,14 +258,11 @@ class menuOption{
     constructor(id, pId){
         this.id = id
         this.pId = pId
-        
-        this.x = 0
-        this.y = optionSize * id
-
         this.imgSrc = this.pId.mainImgSrc
+        this.x = 0
+        this.y = optionSize * this.id
         this.w = optionSize
-        this.h = optionSize
-        
+        this.h = optionSize 
         this.draw = ()=>{
             let img = document.createElement('img')
             img.src = this.imgSrc
@@ -264,15 +282,16 @@ class menuOption{
     }
 }
 class sellBtn{
-    constructor(par, btnID, message){
+    constructor(par, btnID){
         this.par = par
         this.btnID = btnID
-        this.message = message
+        this.message = this.btnID.name
         this.x = this.par.x + menuWidth
         this.y = this.par.y
         this.w = menuWidth
         this.h = this.par.h
         this.color = '#222'
+        console.log(this.btnID)
         this.draw = ()=>{   
             var fontPaddingW = 10   
             var fontPaddingH = this.h/2   
@@ -426,21 +445,9 @@ function generateLand(){
         farms.push(new farmOrganizer(k))
         for(let j = 0; j < landNum; j++){
             let landChunkStatus = (random(1, 100) == 1) ? 'cleared' : 'uncleared'
-            let landChunk = new land(landX, landY, landChunkStatus, j)
-            farms[k].landL.push(landChunk)  
-            //calculate x,y
-            if(landX + landSize <= canvas.width){
-                if(landY + landSize >= canvas.height){
-                    landX += landSize
-                    landY = 0
-                }
-                else{
-                    landY += landSize
-                }
-            }
+            let landChunk = new land(landChunkStatus, j)
+            farms[k].landL.push(landChunk)
         }
-        landX = menuWidth
-        landY = 0
     }
     //farm btn
     for(let f = 0; f < farms.length; f++){
@@ -449,22 +456,10 @@ function generateLand(){
 }
 function generateNewLand(){
     farms.push(new farmOrganizer(farms.length))
-    landX = landSize * 2
-    landY = 0
     //
     for(let j = 0; j < landNum; j++){
-        var landChunk = new land(landX, landY, (random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
+        var landChunk = new land((random(1, 100) == 1) ? 'cleared' : 'uncleared', j)
         farms[farms.length - 1].landL.push(landChunk)
-        //calculate x,y
-        if(landX + landSize <= canvas.width){
-            if(landY + landSize >= canvas.height){
-                landX += landSize
-                landY = 0
-            }
-            else{
-                landY += landSize
-            }
-        }
     }
     farmListPush(farms.length - 1)
     farmNum += 1
@@ -695,7 +690,7 @@ function plantCrop(Sland){
             Splant.qty -= 1
             var Pland
             for(const j of farms[currentFarm].landL.values()){if(j == Sland.x, Sland.y) Pland = j}
-            plantList.push(new plant(Sland.x, Sland.y, gameTick, Object.values(plantIDs)[i], Pland, currentFarm))
+            plantList.push(new plant(Sland.id, gameTick, Object.values(plantIDs)[i], Pland, currentFarm))
             Sland.status = landStatus[2]
         }
     }
@@ -711,6 +706,9 @@ function cursor(x, y){
         img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/Crosshair.png`
     }
     ctx.drawImage(img, x - w/2, y - h/2, w, h)
+}
+function checkClick(x, y, w, h, mx, my){
+    if(mx >= x && mx <= x + w && my >= y && my <= y + h) return true
 }
 
 /**** EVENT HANDLER */
@@ -768,6 +766,52 @@ window.onkeyup = (e)=>{
     		otherKeys.shift = false
     }
 }
+window.onresize = ()=>{
+    for(let i in menuOptionList){
+        let menu = menuOptionList[i]
+        menu.x = 0
+        menu.y = optionSize * menu.id
+        menu.w = optionSize
+        menu.h = optionSize 
+    }
+    for(let i in sellBtnsList){
+        let sBtn = sellBtnsList[i]
+        sBtn.x = sBtn.par.x + menuWidth
+        sBtn.y = sBtn.par.y
+        sBtn.w = menuWidth
+        sBtn.h = sBtn.par.h
+    }
+    for(let i in displayList){
+        let d = displayList[i]
+        d.height = displayH
+        d.width = (displayW < 75)? displayW : 75
+        d.x = displayX
+        d.y = displayY
+    }
+    for(let i in farms){
+        for(let j in farms[i].landL){
+            let farm = farms[i].landL[j]
+            farm.size = landSize
+            farm.xcoordinator = Math.floor(farm.id%(widthMinus/farm.size))
+            farm.ycoordinator = Math.floor((farm.size * farm.id)/widthMinus)// # row
+            farm.x = farm.xcoordinator * farm.size + menuWidth
+            farm.y = farm.ycoordinator * farm.size
+            
+        }
+    }
+    for(let i in plantList){
+        let p = plantList[i]
+        for(let j in farms){
+            for(let k in farms[j].landL){
+                farms[j].landL[k]
+                p.x = farms[p.cF].landL[p.landId].x
+                p.y = farms[p.cF].landL[p.landId].y
+            }
+        }
+
+    }
+
+}
 var cursorX = 0
 var cursorY = 0
 canvas.onmousemove = (e)=>{
@@ -803,9 +847,6 @@ canvas.onwheel = (e)=>{
             f.y += scrollValue * 30
         }
     }
-}
-function checkClick(x, y, w, h, mx, my){
-    if(mx >= x && mx <= x + w && my >= y && my <= y + h) return true
 }
 canvas.ontouch = canvas.onmousedown = (e)=>{
     if(!help){
@@ -1013,12 +1054,13 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
 
 /****UPDATE */
 function startGame(){
+    stateVars()
     generateLand()
     for(let i = 0; i < Object.keys(plantIDs).length; i++){
         menuOptionList.push(new menuOption(i, Object.values(plantIDs)[i]))
     }
     for(let i = 0; i < Object.keys(plantIDs).length; i++){
-        sellBtnsList.push(new sellBtn(menuOptionList[i], Object.values(plantIDs)[i], Object.values(plantIDs)[i].name)) // corn
+        sellBtnsList.push(new sellBtn(menuOptionList[i], Object.values(plantIDs)[i])) // corn
     }
     for(let i = 0; i < Object.keys(plantIDs).length; i++){
         buyList.push(new buyOption(i, Object.values(plantIDs)[i]))
@@ -1039,6 +1081,9 @@ function startGame(){
 }
 startGame()
 setInterval(function(){
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    stateVars()
     if(!market){
         //
         background()
