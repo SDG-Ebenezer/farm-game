@@ -61,7 +61,7 @@ var optionSize = menuWidth - 25
 
 var selectedCrop, marketBtnW, marketBtnH, marketBtnX, marketBtnY, helpBtnW, helpBtnH, helpBtnX,
 helpBtnY, inputw, inputh, inputx, inputy, inputTextSize, buyBtnY, maxBuyHeight, cfbw, cfbh, cfbx, cfby, 
-bsBtnX, bsBtnY, historyBtnX, historyBtnY, menuTextSize, widthMinus, landNum, landPerLine, landSize,
+bsBtnX, bsBtnY, historyBtnX, historyBtnY, menuTextSize, widthMinus, landNum, landPerRow, landSize,
 displayPadding, displayH, displayW, displayX, displayY, displayBtnH, displayBtnW, displayBtnX, displayBtnY, 
 bsBtnW, bsBtnH
 
@@ -104,8 +104,8 @@ function stateVars(){
     
     widthMinus = canvas.width - menuWidth
     landNum = 64
-    landPerLine = Math.floor(Math.sqrt(landNum))// each square is 1/<landPerLine> of the canvas size (e.g. if landPerLine is 20, then land size is 1/20)
-    landSize = Math.sqrt((widthMinus * canvas.height)/landNum)
+    landPerRow = Math.floor(Math.sqrt(landNum))// each square is 1/<landPerRow> of the canvas size (e.g. if landPerRow is 20, then land size is 1/20)
+    landSize = (widthMinus > canvas.height)? canvas.height/landPerRow : widthMinus/landPerRow
 
     displayPadding = 10
     displayH = canvas.height/2
@@ -140,7 +140,7 @@ var currentDisplay = 0
 //buy
 var sellNBuy = true //
 //
-var showLandId = true //
+var showLandId = false //
 
 //farms
 var farmNum = 1 //start out num
@@ -180,8 +180,8 @@ class land{
         this.id = id
 
         this.size = landSize
-        this.xcoordinator = Math.floor(this.id%(widthMinus/this.size))
-        this.ycoordinator = Math.floor((this.size * this.id)/widthMinus)// # row
+        this.xcoordinator = Math.floor(this.id%landPerRow)
+        this.ycoordinator = Math.floor((this.id)/landPerRow)// # row
         this.x = this.xcoordinator * this.size + menuWidth
         this.y = this.ycoordinator * this.size
         
@@ -792,8 +792,8 @@ window.onresize = ()=>{
         for(let j in farms[i].landL){
             let farm = farms[i].landL[j]
             farm.size = landSize
-            farm.xcoordinator = Math.floor(farm.id%(widthMinus/farm.size))
-            farm.ycoordinator = Math.floor((farm.size * farm.id)/widthMinus)// # row
+            farm.xcoordinator = Math.floor(farm.id%landPerRow)
+            farm.ycoordinator = Math.floor((farm.id)/landPerRow)// # row
             farm.x = farm.xcoordinator * farm.size + menuWidth
             farm.y = farm.ycoordinator * farm.size
             
