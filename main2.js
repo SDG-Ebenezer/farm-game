@@ -104,7 +104,7 @@ function stateVars(){
     
     widthMinus = canvas.width - menuWidth
     landNum = 64
-    landPerRow = Math.floor(Math.sqrt(landNum))// each square is 1/<landPerRow> of the canvas size (e.g. if landPerRow is 20, then land size is 1/20)
+    landPerRow = Math.sqrt(landNum)// each square is 1/<landPerRow> of the canvas size (e.g. if landPerRow is 20, then land size is 1/20)
     landSize = (widthMinus > canvas.height)? canvas.height/landPerRow : widthMinus/landPerRow
 
     displayPadding = 10
@@ -970,6 +970,7 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
         }
         /*** MARKET **/
         else if(market){
+            if(quantity == "" || quantity == 0) quantity = 1
             //if history = true, disable the following
             if(!hsty){
                 if(sellNBuy){
