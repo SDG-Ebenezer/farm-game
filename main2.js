@@ -710,7 +710,53 @@ function cursor(x, y){
 function checkClick(x, y, w, h, mx, my){
     if(mx >= x && mx <= x + w && my >= y && my <= y + h) return true
 }
+function resizeObjects(){
+    stateVars()
+    for(let i in menuOptionList){
+        let menu = menuOptionList[i]
+        menu.x = 0
+        menu.y = optionSize * menu.id
+        menu.w = optionSize
+        menu.h = optionSize 
+    }
+    for(let i in sellBtnsList){
+        let sBtn = sellBtnsList[i]
+        sBtn.x = sBtn.par.x + menuWidth
+        sBtn.y = sBtn.par.y
+        sBtn.w = menuWidth
+        sBtn.h = sBtn.par.h
+    }
+    for(let i in displayList){
+        let d = displayList[i]
+        d.height = displayH
+        d.width = (displayW < 75)? displayW : 75
+        d.x = displayX
+        d.y = displayY
+    }
+    for(let i in farms){
+        for(let j in farms[i].landL){
+            let farm = farms[i].landL[j]
+            farm.size = landSize
+            farm.xcoordinator = Math.floor(farm.id%landPerRow)
+            farm.ycoordinator = Math.floor((farm.id)/landPerRow)// # row
+            farm.x = farm.xcoordinator * farm.size + menuWidth
+            farm.y = farm.ycoordinator * farm.size
+            
+        }
+    }
+    for(let i in plantList){
+        let p = plantList[i]
+        for(let j in farms){
+            for(let k in farms[j].landL){
+                farms[j].landL[k]
+                p.x = farms[p.cF].landL[p.landId].x
+                p.y = farms[p.cF].landL[p.landId].y
+            }
+        }
 
+    }
+
+}
 /**** EVENT HANDLER */
 const otherKeys = {
     shift : false,
@@ -766,52 +812,7 @@ window.onkeyup = (e)=>{
     		otherKeys.shift = false
     }
 }
-window.onresize = ()=>{
-    for(let i in menuOptionList){
-        let menu = menuOptionList[i]
-        menu.x = 0
-        menu.y = optionSize * menu.id
-        menu.w = optionSize
-        menu.h = optionSize 
-    }
-    for(let i in sellBtnsList){
-        let sBtn = sellBtnsList[i]
-        sBtn.x = sBtn.par.x + menuWidth
-        sBtn.y = sBtn.par.y
-        sBtn.w = menuWidth
-        sBtn.h = sBtn.par.h
-    }
-    for(let i in displayList){
-        let d = displayList[i]
-        d.height = displayH
-        d.width = (displayW < 75)? displayW : 75
-        d.x = displayX
-        d.y = displayY
-    }
-    for(let i in farms){
-        for(let j in farms[i].landL){
-            let farm = farms[i].landL[j]
-            farm.size = landSize
-            farm.xcoordinator = Math.floor(farm.id%landPerRow)
-            farm.ycoordinator = Math.floor((farm.id)/landPerRow)// # row
-            farm.x = farm.xcoordinator * farm.size + menuWidth
-            farm.y = farm.ycoordinator * farm.size
-            
-        }
-    }
-    for(let i in plantList){
-        let p = plantList[i]
-        for(let j in farms){
-            for(let k in farms[j].landL){
-                farms[j].landL[k]
-                p.x = farms[p.cF].landL[p.landId].x
-                p.y = farms[p.cF].landL[p.landId].y
-            }
-        }
 
-    }
-
-}
 var cursorX = 0
 var cursorY = 0
 canvas.onmousemove = (e)=>{
@@ -1084,7 +1085,8 @@ startGame()
 setInterval(function(){
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-    stateVars()
+    
+    resizeObjects()
     if(!market){
         //
         background()
