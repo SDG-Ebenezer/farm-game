@@ -465,12 +465,12 @@ function generateNewLand(){
     farmNum += 1
 }
 function farmListPush(i){
-    let w = h = canvas.height/8
-    let row = Math.floor(((i + 1) * w)/canvas.width) // # row
-    let x = ((i - row) - (row * Math.floor(canvas.width/w)) + ((row > 0)? 1 : 0)) * w
-    let y = row * h 
-    console.log(Math.round(x), y)
-    
+    let w = h = canvas.width/10
+    let row = 10 // # row
+    let xcoordinator = row%i
+    let ycoordinator = Math.floor(row/i)
+    let x = xcoordinator * w
+    let y = ycoordinator * h 
     farmBtns.push(new farmBtn(x, y, w, h, farms[i]))
 }
 function drawLand(){
