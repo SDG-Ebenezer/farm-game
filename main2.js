@@ -236,24 +236,6 @@ class plant{
         }
     }
 }
-class farmBtn{
-    constructor(x, y, w, h, par){
-        this.x = x
-        this.y = y
-        this.w = w
-        this.h = h
-        this.par = par
-        this.draw = ()=>{
-            let img = document.createElement('img')
-            img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png'
-            ctx.drawImage(img, this.x, this.y + farmBtnsScrollBase, this.w, this.h)
-            //text
-            ctx.fillStyle = 'white'
-            ctx.font = '20px Trebuchet MS'
-            ctx.fillText(`#${this.par.id + 1}`, this.x + this.w - 25, this.y + this.h + farmBtnsScrollBase, 25)
-        }
-    }
-}
 class menuOption{
     constructor(id, pId){
         this.id = id
@@ -281,6 +263,24 @@ class menuOption{
         }
     }
 }
+class farmBtn{
+    constructor(x, y, w, h, par){
+        this.x = x
+        this.y = y
+        this.w = w
+        this.h = h
+        this.par = par
+        this.draw = ()=>{
+            let img = document.createElement('img')
+            img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png'
+            ctx.drawImage(img, this.x, this.y + farmBtnsScrollBase, this.w, this.h)
+            //text
+            ctx.fillStyle = 'white'
+            ctx.font = '20px Trebuchet MS'
+            ctx.fillText(`#${this.par.id + 1}`, this.x + this.w - 25, this.y + this.h + farmBtnsScrollBase, 25)
+        }
+    }
+}
 class sellBtn{
     constructor(par, btnID){
         this.par = par
@@ -291,7 +291,6 @@ class sellBtn{
         this.w = menuWidth
         this.h = this.par.h
         this.color = '#222'
-        console.log(this.btnID)
         this.draw = ()=>{   
             var fontPaddingW = 10   
             var fontPaddingH = this.h/2   
@@ -850,7 +849,6 @@ canvas.onwheel = (e)=>{
         }
     }
     if(changeFarmPG){
-        console.log(farmBtns[0])
         farmBtnsScrollBase += scrollValue * 30
     }
 }
