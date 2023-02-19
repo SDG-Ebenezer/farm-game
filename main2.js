@@ -123,7 +123,6 @@ var mouseActive = true
 var market = false // t/f
 var changeFarmPG = false //
 var help = false
-
 //
 cursorStatusOptions = ['clear', 'plant', 'harvest']
 cursorStatus = cursorStatusOptions[1]
@@ -145,6 +144,7 @@ var showLandId = false //
 //farms
 var farmNum = 1 //start out num
 var currentFarm = 0
+var farmBtnsScrollBase = 0
 
 //history
 const history = []
@@ -246,11 +246,11 @@ class farmBtn{
         this.draw = ()=>{
             let img = document.createElement('img')
             img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png'
-            ctx.drawImage(img, this.x, this.y, this.w, this.h)
+            ctx.drawImage(img, this.x, this.y + farmBtnsScrollBase, this.w, this.h)
             //text
             ctx.fillStyle = 'white'
             ctx.font = '20px Trebuchet MS'
-            ctx.fillText(`#${this.par.id + 1}`, this.x + this.w - 25, this.y + this.h, 25)
+            ctx.fillText(`#${this.par.id + 1}`, this.x + this.w - 25, this.y + this.h + farmBtnsScrollBase, 25)
         }
     }
 }
@@ -849,16 +849,10 @@ canvas.onwheel = (e)=>{
             }
         }
     }
-    /*
     if(changeFarmPG){
-        for(let i in farmBtns){
-            
-            let f = farmBtns[i]
-            console.log(scrollValue, f)
-            f.y += scrollValue * 30
-        }
+        console.log(farmBtns[0])
+        farmBtnsScrollBase += scrollValue * 30
     }
-    */
 }
 canvas.ontouch = canvas.onmousedown = (e)=>{
     if(!help){
