@@ -697,7 +697,7 @@ function plantCrop(Sland){
 }
 //
 function cursor(x, y){
-    let w = h = 20
+    let w = h = (canvas.width > canvas.height)? canvas.height/30: canvas.width/30
     let img = document.createElement('img')
     if(((selectedCrop!=null)? selectedCrop.qty : -1 > 0) && !market && !help){
         img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/${selectedCrop.name}.png` 
