@@ -55,7 +55,7 @@ var money = 1000 //
 canvas.height = window.innerHeight
 canvas.width = window.innerWidth
 
-var iconSize = (! canvas.height/10 > 40) ? canvas.height/10 : 40
+var iconSize = (canvas.width > canvas.height) ? canvas.height/15 : canvas.width/15
 var menuWidth = canvas.height/5
 var optionSize = menuWidth - 25
 
@@ -67,7 +67,7 @@ bsBtnW, bsBtnH
 
 //misc vars contained in here
 function stateVars(){
-    iconSize = (! canvas.height/10 > 40) ? canvas.height/10 : 40
+    iconSize = (canvas.width > canvas.height) ? canvas.height/20 : canvas.width/20
 
     menuWidth = (canvas.width > canvas.height) ? canvas.height/5 : canvas.width/5
     optionSize = menuWidth - 25
