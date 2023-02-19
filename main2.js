@@ -755,7 +755,15 @@ function resizeObjects(){
         }
 
     }
-
+    for(let i in farmBtns){
+        let btn = farmBtns[i]
+        let row = 10 // # row
+        let xcoordinator = i%row
+        let ycoordinator = Math.floor(i/row)
+        btn.w = btn.h = canvas.width/10
+        btn.x = xcoordinator * btn.w
+        btn.y = ycoordinator * btn.h 
+    }
 }
 /**** EVENT HANDLER */
 const otherKeys = {
