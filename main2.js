@@ -63,7 +63,7 @@ var selectedCrop, marketBtnW, marketBtnH, marketBtnX, marketBtnY, helpBtnW, help
 helpBtnY, inputw, inputh, inputx, inputy, inputTextSize, buyBtnY, maxBuyHeight, cfbw, cfbh, cfbx, cfby, 
 bsBtnX, bsBtnY, historyBtnX, historyBtnY, menuTextSize, widthMinus, landNum, landPerRow, landSize,
 displayPadding, displayH, displayW, displayX, displayY, displayBtnH, displayBtnW, displayBtnX, displayBtnY, 
-bsBtnW, bsBtnH
+bsBtnW, bsBtnH, historyBtnW, historyBtnH
 
 //misc vars contained in here
 function stateVars(){
@@ -117,6 +117,8 @@ function stateVars(){
     displayBtnX = displayX
     displayBtnY = displayY + displayH
     bsBtnW = bsBtnH = iconSize
+
+    historyBtnW = historyBtnH = iconSize
 }
 
 var mouseActive = true
@@ -153,7 +155,6 @@ var hstyScrollable = {
     up : false,
     down : false
 }
-var historyBtnW = historyBtnH = iconSize
 
 /****GET RANDOM NUM */
 function random(min, max){
