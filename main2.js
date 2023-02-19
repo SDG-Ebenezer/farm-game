@@ -467,8 +467,8 @@ function generateNewLand(){
 function farmListPush(i){
     let w = h = canvas.width/10
     let row = 10 // # row
-    let xcoordinator = row%(i+1)
-    let ycoordinator = Math.floor(row/(i+1))
+    let xcoordinator = i%row
+    let ycoordinator = Math.floor(i/row)
     let x = xcoordinator * w
     let y = ycoordinator * h 
     farmBtns.push(new farmBtn(x, y, w, h, farms[i]))
