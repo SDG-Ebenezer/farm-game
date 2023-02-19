@@ -69,7 +69,7 @@ bsBtnW, bsBtnH
 function stateVars(){
     iconSize = (! canvas.height/10 > 40) ? canvas.height/10 : 40
 
-    menuWidth = canvas.height/5
+    menuWidth = (canvas.width > canvas.height) ? canvas.height/5 : canvas.width/5
     optionSize = menuWidth - 25
 
     marketBtnW = marketBtnH = iconSize
@@ -108,11 +108,11 @@ function stateVars(){
     landSize = (widthMinus > canvas.height)? canvas.height/landPerRow : widthMinus/landPerRow
 
     displayPadding = 10
-    displayH = canvas.height/2
+    displayH = (canvas.width > canvas.height) ? canvas.height/2 : canvas.width/2
     displayW = canvas.width/25
     displayX = (menuWidth * 2) + (displayPadding * 2)
     displayY = displayPadding
-    displayBtnH = canvas.height * 2/35
+    displayBtnH = (canvas.width > canvas.height) ? canvas.height * 2/35 : canvas.width * 2/35
     displayBtnW = displayH + displayW
     displayBtnX = displayX
     displayBtnY = displayY + displayH
@@ -829,7 +829,6 @@ canvas.onmousemove = (e)=>{
 }
 canvas.onwheel = (e)=>{
     let scrollValue = (e.deltaY > 0)? -1 : 1
-    console.log(history[0], scrollValue)
     
     if(history.length > 0){
         if(history[0][1] >= 0){
@@ -850,12 +849,16 @@ canvas.onwheel = (e)=>{
             }
         }
     }
+    /*
     if(changeFarmPG){
         for(let i in farmBtns){
+            
             let f = farmBtns[i]
+            console.log(scrollValue, f)
             f.y += scrollValue * 30
         }
     }
+    */
 }
 canvas.ontouch = canvas.onmousedown = (e)=>{
     if(!help){
