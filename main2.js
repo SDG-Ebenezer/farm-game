@@ -188,6 +188,7 @@ class land{
         this.g = random(50,80)
         this.rgb = ''
         this.draw = ()=>{
+            let extraLandPadding = (widthMinus > canvas.height)? canvas.height/800 : widthMinus/800
             if(this.status == 'uncleared'){
                 this.rgb = `rgb(3, ${this.g}, 30)`
             }
@@ -198,7 +199,7 @@ class land{
                 this.rgb = 'rgb(54, 39, 11)'
             }
             ctx.fillStyle = this.rgb
-            ctx.fillRect(this.x, this.y, this.size, this.size)
+            ctx.fillRect(this.x, this.y, this.size + extraLandPadding, this.size + extraLandPadding)
             if(showLandId){
                 ctx.fillStyle = '#aaaaaa'
                 ctx.font = '20px Trebuchet MS'
