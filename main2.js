@@ -46,7 +46,6 @@ const plantIDs = {
     },  
 }
 
-
 var fps = 10
 var gameTickTime = 1000 //ms
 var gameTick = 0 //
@@ -479,6 +478,19 @@ function drawLand(){
         farms[currentFarm].landL[z].draw()
     }
 }
+//land chance to turn back to uncleared if cleared
+setInterval(()=>{
+    for(let i in farms){
+        for(let j in farms[i].landL){
+            if(farms[i].landL[j].status == 'cleared'){
+                let chance = random(1, 100)
+                if(chance == 1){
+                    farms[i].landL[j].status = 'uncleared'
+                }
+            }
+        }
+    }
+}, gameTickTime)
 //change farm btn
 function chgFarmBtn(){
     let img = document.createElement('img')
