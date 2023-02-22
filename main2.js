@@ -1010,9 +1010,9 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
                         if(checkClick(0, btn.y, btn.w, btn.h, e.x, e.y) && money - (btn.btnID.cost  * quantity) >= 0 && parseInt(quantity) != 0){
                             btn.btnID.qty += parseInt(quantity)
                             money -= btn.btnID.cost * quantity
-                            if(btn.par.pId.name == 'farm'){
+                            if(btn.par.pId.name == 'Farm'){
                                 for(let j = 0; j < parseInt(quantity); j++){
-                                    if(farms.length < 80) generateNewLand()
+                                    generateNewLand()
                                 }
                             }
                             history.push([`T${gameTick} || Bought x${quantity} ${btn.par.pId.name} for $${btn.btnID.cost * quantity}.`, 
