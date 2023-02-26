@@ -59,10 +59,10 @@ var menuWidth = canvas.height/5
 var optionSize = menuWidth - 25
 
 var selectedCrop, marketBtnW, marketBtnH, marketBtnX, marketBtnY, helpBtnW, helpBtnH, helpBtnX,
-helpBtnY, inputw, inputh, inputx, inputy, inputTextSize, buyBtnY, maxBuyHeight, cfbw, cfbh, cfbx, cfby, 
+helpBtnY, inputw, inputh, inputx, inputy, inputTextSize, maxBuyHeight, cfbw, cfbh, cfbx, cfby, 
 bsBtnX, bsBtnY, historyBtnX, historyBtnY, menuTextSize, widthMinus, landNum, landPerRow, landSize,
 displayPadding, displayH, displayW, displayX, displayY, displayBtnH, displayBtnW, displayBtnX, displayBtnY, 
-bsBtnW, bsBtnH, historyBtnW, historyBtnH
+bsBtnW, bsBtnH, historyBtnW, historyBtnH, buyOptionSize
 
 //misc vars contained in here
 function stateVars(){
@@ -84,10 +84,6 @@ function stateVars(){
     inputx = canvas.width * 1/75
     inputy = optionSize * (Object.keys(plantIDs).length + 2) //
     inputTextSize = (inputh > 10)? inputh : 10
-
-    buyBtnY = canvas.height * 32/70
-
-    maxBuyHeight = canvas.height - buyBtnY - inputy
 
     cfbw = cfbh = iconSize
     cfbx = canvas.width - cfbw
@@ -118,6 +114,8 @@ function stateVars(){
     bsBtnW = bsBtnH = iconSize
 
     historyBtnW = historyBtnH = iconSize
+
+    buyOptionSize = (canvas.width > canvas.height) ? canvas.height/8 : canvas.width/8
 }
 
 var mouseActive = true
@@ -170,7 +168,6 @@ farmBtns = []
 menuOptionList = []
 sellBtnsList = []
 buyList = []
-buyBtnsList = []
 displayList = []
 
 //classes
@@ -313,9 +310,9 @@ class buyOption{
         this.pId = pId
 
         this.imgSrc = pId.mainImgSrc
-        this.size = canvas.height/8
+        this.size = buyOptionSize
         this.x = 0
-        this.y = 0 + (this.size * this.id)
+        this.y = (this.size * this.id)
         this.drawMajorDisplay = ()=>{
             ctx.save()
             ctx.translate(this.x + this.size + 50, this.y)
@@ -327,7 +324,14 @@ class buyOption{
             let img = document.createElement('img')
             img.src = this.imgSrc
             ctx.drawImage(img, 0, 0, this.size, this.size)
-
+            //font
+            let fontPaddingW = 10 + this.size  
+            let fontPaddingH = this.size/2   
+            ctx.fillStyle = '#eee'
+            ctx.font = '20px Trebuchet MS'
+            let s = (quantity != 1) ? "s" : ""
+            ctx.fillText(`Buy x${(quantity == "") ? 0 : quantity} ${this.pId.name}${s} (Grand Cost: $${this.pId.cost * quantity})`, 
+            fontPaddingW, fontPaddingH)
             ctx.restore()
         }
         this.draw = ()=>{
@@ -339,33 +343,6 @@ class buyOption{
             ctx.fillStyle = '#aaaaaa'
             ctx.font = '20px Trebuchet MS'
             ctx.fillText(`$${this.pId.cost}`, this.x + this.size, this.y + this.size, 50)
-        }
-    }
-}
-class buyBtn{
-    constructor(id, par, btnID, message){
-        this.par = par
-        this.id = id
-        this.btnID = btnID
-        this.message = message
-
-        this.w = 400
-        this.h = 100
-        this.x = this.par.x + this.par.size * 2.5
-        this.y = this.par.y
-        this.color = '#313131'
-        this.draw = ()=>{   
-            let fontPaddingW = 10   
-            let fontPaddingH = this.h/2   
-            ctx.save()
-            ctx.translate(this.x, this.y)
-            //FONT
-            ctx.fillStyle = 'white'
-            ctx.font = '20px Trebuchet MS'
-            let s = (quantity != 1) ? "s" : ""
-            ctx.fillText(`Buy x${(quantity == "") ? 0 : quantity} ${this.message}${s} (Grand Cost: $${this.btnID.cost * quantity})`, 
-            fontPaddingW, fontPaddingH, this.w)
-            ctx.restore()
         }
     }
 }
@@ -558,9 +535,6 @@ function marketContent(){
     }
     else{
         drawBuyDisplay()
-        for(let i in buyBtnsList){
-            buyBtnsList[i].draw()
-        }
     }
 
     //history
@@ -738,6 +712,11 @@ function resizeObjects(){
         sBtn.y = sBtn.par.y
         sBtn.w = menuWidth
         sBtn.h = sBtn.par.h
+    }
+    for(let i in buyList){
+        let bl = buyList[i]
+        bl.size = buyOptionSize
+        bl.y = bl.id * bl.size
     }
     for(let i in displayList){
         let d = displayList[i]
@@ -961,7 +940,6 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
                         }
                     }  
                 }
-            
                 //  
                 for(let i in menuOptionList){
                     let option = menuOptionList[i]
@@ -1005,17 +983,19 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
                     }
                 }
                 else{
-                    for(let i in buyBtnsList){
-                        let btn = buyBtnsList[i]
-                        if(checkClick(0, btn.y, btn.w, btn.h, e.x, e.y) && money - (btn.btnID.cost  * quantity) >= 0 && parseInt(quantity) != 0){
-                            btn.btnID.qty += parseInt(quantity)
-                            money -= btn.btnID.cost * quantity
-                            if(btn.par.pId.name == 'Farm'){
+                    for(let i in buyList){
+                        let btn = buyList[i]
+                        console.log(0, btn.y, canvas.width, btn.size, e.x, e.y)
+                        if(checkClick(0, btn.y, canvas.width, btn.size, e.x, e.y) && money - (btn.pId.cost  * quantity) >= 0 && parseInt(quantity) != 0){
+                            
+                            btn.pId.qty += parseInt(quantity)
+                            money -= btn.pId.cost * quantity
+                            if(btn.pId.name == 'Farm'){
                                 for(let j = 0; j < parseInt(quantity); j++){
                                     generateNewLand()
                                 }
                             }
-                            history.push([`T${gameTick} || Bought x${quantity} ${btn.par.pId.name} for $${btn.btnID.cost * quantity}.`, 
+                            history.push([`T${gameTick} || Bought x${quantity} ${btn.pId.name} for $${btn.pId.cost * quantity}.`, 
                                     (history.length > 0)? history[history.length - 1][1] + 1 : 0])
                         }
                     }
@@ -1090,9 +1070,6 @@ function startGame(){
         qty : farmNum,
         mainImgSrc : 'https://sdg-ebenezer.github.io/farm-game/Pictures/Farm.png',
     }))
-    for(let i = 0; i < buyList.length; i++){
-        buyBtnsList.push(new buyBtn(i, buyList[i], buyList[i].pId, buyList[i].pId.name))
-    }
     for(let i = 0; i < Object.keys(plantIDs).length; i++){
         displayList.push(new display(Object.values(plantIDs)[i]))
         //Object.values(plantIDs)[i]    
