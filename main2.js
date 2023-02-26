@@ -136,7 +136,7 @@ landStatus = ['uncleared', 'cleared', 'planted']
 var currentDisplay = 0
 
 //buy
-var sellNBuy = true //
+var sellNBuy = false //
 //
 var showLandId = false //
 
@@ -190,13 +190,14 @@ class land{
                 this.rgb = `rgb(3, ${this.g}, 30)`
             }
             else if(this.status == 'cleared'){
-                this.rgb = 'rgb(84, 61, 17)'
-            }
-            else if(this.status == 'planted'){
-                this.rgb = 'rgb(54, 39, 11)'
+                this.rgb = 'rgb(74, 55, 23)'
             }
             ctx.fillStyle = this.rgb
             ctx.fillRect(this.x, this.y, this.size + extraLandPadding, this.size + extraLandPadding)
+            if(this.status == 'planted'){
+                ctx.fillStyle = '#00000055'
+                ctx.fillRect(this.x, this.y, this.size + extraLandPadding, this.size + extraLandPadding)
+            }
             if(showLandId){
                 ctx.fillStyle = '#aaaaaa'
                 ctx.font = '20px Trebuchet MS'
@@ -400,7 +401,7 @@ class display{
 function timeCropGrowth(){    
     for(let i in plantList){
         let crop = plantList[i]
-        if(gameTick == crop.plantTime){
+        if(gameTick >= crop.plantTime){
             crop.plantTime += crop.id.gTime
             if(crop.status < crop.id.status) crop.status += 1
         }
@@ -867,7 +868,7 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
                             else{
                                 Sland.status = landStatus[1]
                                 money -= 100
-                                Sland.g = random(30, 80)
+                                Sland.g = random(50,80)
                             }
                         }
                         //plant
