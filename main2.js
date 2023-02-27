@@ -60,9 +60,9 @@ var optionSize = menuWidth - 25
 
 var selectedCrop, marketBtnW, marketBtnH, marketBtnX, marketBtnY, helpBtnW, helpBtnH, helpBtnX,
 helpBtnY, inputw, inputh, inputx, inputy, inputTextSize, maxBuyHeight, cfbw, cfbh, cfbx, cfby, 
-bsBtnX, bsBtnY, historyBtnX, historyBtnY, menuTextSize, widthMinus, landNum, landPerRow, landSize,
-displayPadding, displayH, displayW, displayX, displayY, displayBtnH, displayBtnW, displayBtnX, displayBtnY, 
-bsBtnW, bsBtnH, historyBtnW, historyBtnH, buyOptionSize
+bsBtnX, bsBtnY, bsBtnW, bsBtnH, historyBtnX, historyBtnY, menuTextSize, widthMinus, landNum, landPerRow, 
+landSize, displayPadding, displayH, displayW, displayX, displayY, displayBtnH, displayBtnW, displayBtnX, 
+displayBtnY, historyBtnW, historyBtnH, buyOptionSize
 
 //misc vars contained in here
 function stateVars(){
@@ -88,7 +88,9 @@ function stateVars(){
     cfbw = cfbh = iconSize
     cfbx = canvas.width - cfbw
     cfby = canvas.height - (cfbh * 3)
-
+	
+	bsBtnH = iconSize
+	bsBtnW = bsBtnH * 2
     bsBtnX = canvas.width - iconSize - bsBtnW
     bsBtnY = canvas.height - bsBtnH
 
@@ -111,7 +113,6 @@ function stateVars(){
     displayBtnW = displayH + displayW
     displayBtnX = displayX
     displayBtnY = displayY + displayH
-    bsBtnW = bsBtnH = iconSize
 
     historyBtnW = historyBtnH = iconSize
 
@@ -620,7 +621,7 @@ function bsBtn(){
     let img = document.createElement('img')
     if(sellNBuy) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Buy.png'
     else if(sellNBuy == false) img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Sell.png'
-    ctx.drawImage(img, bsBtnX - bsBtnW, bsBtnY, bsBtnW * 2, bsBtnH)
+    ctx.drawImage(img, bsBtnX, bsBtnY, bsBtnW, bsBtnH)
 }
 /**** HELP BTN */
 function helpF(){
@@ -1026,7 +1027,7 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
                     if(currentDisplay >= displayList.length) currentDisplay = 0
                 }
                 //sell/buy btn
-                if(checkClick(bsBtnX - bsBtnW, bsBtnY, bsBtnW * 2, bsBtnH, e.x, e.y) && market){
+                if(checkClick(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
                     if(sellNBuy) sellNBuy = false
                     else if(sellNBuy == false) sellNBuy = true
                 }
