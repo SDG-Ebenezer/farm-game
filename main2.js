@@ -1026,7 +1026,7 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
                     if(currentDisplay >= displayList.length) currentDisplay = 0
                 }
                 //sell/buy btn
-                if(checkClick(bsBtnX, bsBtnY, bsBtnW, bsBtnH, e.x, e.y) && market){
+                if(checkClick(bsBtnX - bsBtnW, bsBtnY, bsBtnW * 2, bsBtnH, e.x, e.y) && market){
                     if(sellNBuy) sellNBuy = false
                     else if(sellNBuy == false) sellNBuy = true
                 }
