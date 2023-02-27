@@ -117,14 +117,11 @@ function stateVars(){
 
     buyOptionSize = (canvas.width > canvas.height) ? canvas.height/8 : canvas.width/8
 }
-
+//default vars
 var mouseActive = true
 var market = false // t/f
 var changeFarmPG = false //
 var help = false
-//
-cursorStatusOptions = ['clear', 'plant', 'harvest']
-cursorStatus = cursorStatusOptions[1]
 
 //input
 var quantity = "1"
