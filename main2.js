@@ -1091,17 +1091,20 @@ setInterval(function(){
         drawMenu() 
         drawLand()
         drawCrops()
-        drawMenuOptions()
+        
         showMoney()
         if(changeFarmPG){
             drawFarms()
         }
         //
         chgFarmBtn()
+        drawMenuOptions()
     }
     else {
         marketContent()
+        if(sellNBuy) drawMenuOptions()
     }
+    
     drawMarketBtn() //
     timeCropGrowth() // crop growth
     //help
