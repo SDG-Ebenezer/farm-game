@@ -61,12 +61,12 @@ var optionSize = menuWidth - 25
 var selectedCrop, marketBtnW, marketBtnH, marketBtnX, marketBtnY, helpBtnW, helpBtnH, helpBtnX,
 helpBtnY, inputw, inputh, inputx, inputy, inputTextSize, maxBuyHeight, cfbw, cfbh, cfbx, cfby, 
 bsBtnX, bsBtnY, bsBtnW, bsBtnH, historyBtnX, historyBtnY, menuTextSize, widthMinus, landNum, landPerRow, 
-landSize, displayPadding, displayH, displayW, displayX, displayY, displayBtnH, displayBtnW, displayBtnX, 
+landSize, displayH, displayW, displayX, displayY, displayBtnH, displayBtnW, displayBtnX, 
 displayBtnY, historyBtnW, historyBtnH, buyOptionSize
 
 //misc vars contained in here
 function stateVars(){
-    iconSize = (canvas.width > canvas.height) ? canvas.height/20 : canvas.width/20
+    iconSize = (canvas.width > canvas.height) ? canvas.height/15 : canvas.width/15
 
     menuWidth = (canvas.width > canvas.height) ? canvas.height/5 : canvas.width/5
     optionSize = menuWidth - 25
@@ -104,11 +104,10 @@ function stateVars(){
     landPerRow = Math.sqrt(landNum)// each square is 1/<landPerRow> of the canvas size (e.g. if landPerRow is 20, then land size is 1/20)
     landSize = (widthMinus > canvas.height)? canvas.height/landPerRow : widthMinus/landPerRow
 
-    displayPadding = 10
     displayH = (canvas.width > canvas.height) ? canvas.height/2 : canvas.width/2
     displayW = canvas.width/25
-    displayX = (menuWidth * 2) + (displayPadding * 2)
-    displayY = displayPadding
+    displayX = canvas.width - displayW - displayH
+    displayY = 0
     displayBtnH = (canvas.width > canvas.height) ? canvas.height * 2/35 : canvas.width * 2/35
     displayBtnW = displayH + displayW
     displayBtnX = displayX
@@ -137,7 +136,7 @@ landStatus = ['uncleared', 'cleared', 'planted']
 var currentDisplay = 0
 
 //buy
-var sellNBuy = false //
+var sellNBuy = true //T = SELL | F = BUY
 //
 var showLandId = false //
 
@@ -286,21 +285,26 @@ class sellBtn{
         this.par = par
         this.btnID = btnID
         this.crop = this.btnID.name
-        this.x = this.par.x + menuWidth
+        this.x = menuWidth
         this.y = this.par.y
-        this.w = menuWidth
+        this.w = displayX - this.x
         this.h = this.par.h
         this.color = '#222'
         this.draw = ()=>{   
             let fontPaddingW = 10   
             let fontPaddingH = this.h/2   
             ctx.fillStyle = this.color
-            ctx.fillRect(this.x, this.y + 10, this.w, this.h - 40)
+            ctx.fillRect(this.x, this.y, this.w, this.h)
+            if(this.par.id%2 != 0){
+                ctx.fillStyle = '#ffffff22'
+                ctx.fillRect(this.x, this.y, this.w, this.h)
+            }
             let s = (parseInt(quantity) == 1) ? "" : "s"
             //FONT
             ctx.fillStyle = 'white'
-            ctx.font = `bold ${this.w/7.5}px Trebuchet MS`
-            ctx.fillText(`Sell x${(quantity == "") ? 0 : quantity} ${this.crop}${s}`, this.x + fontPaddingW, this.y + fontPaddingH, this.w)
+            ctx.font = `bold ${(canvas.width > canvas.height) ? canvas.height/30 : canvas.width/30}px Trebuchet MS`
+            ctx.fillText(`Sell x${(quantity == "") ? 0 : quantity} ${this.crop}${s}`, 
+            this.x + fontPaddingW, this.y + fontPaddingH * 1.2, this.w - fontPaddingW)
             if(quantity > this.btnID.qty) this.color = '#cc0700'
             else{this.color = '#222'}
             
@@ -565,7 +569,7 @@ function type(num){
     if(active){
         quantity = quantity.concat(num)
     } 
-    if(quantity.length > 4) quantity = quantity.slice(0, -1)
+    if(quantity.length > 5) quantity = quantity.slice(0, -1)
 }
 function drawMInputDisplay(){
     var fontPadding = 2
@@ -711,9 +715,9 @@ function resizeObjects(){
     }
     for(let i in sellBtnsList){
         let sBtn = sellBtnsList[i]
-        sBtn.x = sBtn.par.x + menuWidth
+        sBtn.x = menuWidth
         sBtn.y = sBtn.par.y
-        sBtn.w = menuWidth
+        sBtn.w = displayX - sBtn.x
         sBtn.h = sBtn.par.h
     }
     for(let i in buyList){
@@ -988,7 +992,6 @@ canvas.ontouch = canvas.onmousedown = (e)=>{
                 else{
                     for(let i in buyList){
                         let btn = buyList[i]
-                        console.log(0, btn.y, canvas.width, btn.size, e.x, e.y)
                         if(checkClick(0, btn.y, canvas.width, btn.size, e.x, e.y) && money - (btn.pId.cost  * quantity) >= 0 && parseInt(quantity) != 0){
                             
                             btn.pId.qty += parseInt(quantity)
