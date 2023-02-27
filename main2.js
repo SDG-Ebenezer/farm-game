@@ -285,21 +285,22 @@ class sellBtn{
     constructor(par, btnID){
         this.par = par
         this.btnID = btnID
-        this.message = this.btnID.name
+        this.crop = this.btnID.name
         this.x = this.par.x + menuWidth
         this.y = this.par.y
         this.w = menuWidth
         this.h = this.par.h
         this.color = '#222'
         this.draw = ()=>{   
-            var fontPaddingW = 10   
-            var fontPaddingH = this.h/2   
+            let fontPaddingW = 10   
+            let fontPaddingH = this.h/2   
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y + 10, this.w, this.h - 40)
+            let s = (parseInt(quantity) == 1) ? "" : "s"
             //FONT
             ctx.fillStyle = 'white'
             ctx.font = `bold ${this.w/7.5}px Trebuchet MS`
-            ctx.fillText(`Sell x${(quantity == "") ? 0 : quantity} ${this.message}`, this.x + fontPaddingW, this.y + fontPaddingH, this.w)
+            ctx.fillText(`Sell x${(quantity == "") ? 0 : quantity} ${this.crop}${s}`, this.x + fontPaddingW, this.y + fontPaddingH, this.w)
             if(quantity > this.btnID.qty) this.color = '#cc0700'
             else{this.color = '#222'}
             
