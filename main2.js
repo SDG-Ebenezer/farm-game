@@ -1091,14 +1091,13 @@ setInterval(function(){
         drawMenu() 
         drawLand()
         drawCrops()
-        
         showMoney()
+        drawMenuOptions()
         if(changeFarmPG){
             drawFarms()
         }
         //
         chgFarmBtn()
-        drawMenuOptions()
     }
     else {
         marketContent()
