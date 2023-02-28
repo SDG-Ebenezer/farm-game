@@ -506,7 +506,7 @@ function showMoney(){
     ctx.fillText(`$${money}`, rectX + fontPadding, rectY + fontPadding + fontSize, menuWidth)
 }
 /****MENU */
-function drawMenu(){
+function menuBackground(){
     //Menu
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, menuWidth, canvas.height)
@@ -519,28 +519,24 @@ function drawMenuOptions(){
 }
 /****MARKET */
 function marketContent(){
+    //market bakground
     ctx.fillStyle = '#111'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     showMoney()
     drawMInputDisplay()
     mInputDisplay()
     bsBtn()
-
     if(sellNBuy){
-        for(let i in menuOptionList){
-            let produce = menuOptionList[i]
-            produce.draw()
-        }
         for(let i in sellBtnsList){
             sellBtnsList[i].draw()
         }
         displayList[currentDisplay].draw()
+        drawMenuOptions()
         displayBtn()
     }
     else{
         drawBuyDisplay()
     }
-
     //history
     if(hsty){
         historyF()
@@ -1088,7 +1084,7 @@ setInterval(function(){
         //
         background()
         //
-        drawMenu() 
+        menuBackground() 
         drawLand()
         drawCrops()
         showMoney()
@@ -1101,17 +1097,17 @@ setInterval(function(){
     }
     else {
         marketContent()
-        if(sellNBuy) drawMenuOptions()
     }
     
     drawMarketBtn() //
-    timeCropGrowth() // crop growth
+    helpBtn()
+
     //help
     if(help){
         helpF()
     }
-    helpBtn()
 
+    timeCropGrowth() // crop growth
     cursor(cursorX, cursorY)
 }, 1000/fps)
 /****GAME TICK */
