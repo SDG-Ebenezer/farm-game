@@ -527,8 +527,7 @@ function marketContent(){
 //market/home btn
 function drawMarketBtn(){
     let img = document.createElement('img')
-    if(!market){img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/Market.png'}
-    else{img.src = 'https://sdg-ebenezer.github.io/farm-game/Pictures/House.png'}
+    img.src = !market ? 'https://sdg-ebenezer.github.io/farm-game/Pictures/Market.png' : 'https://sdg-ebenezer.github.io/farm-game/Pictures/House.png'
     ctx.drawImage(img, marketBtnX, marketBtnY, marketBtnW, marketBtnH)
 }
 /**** INPUTS/ETC */
@@ -550,8 +549,7 @@ function drawMInputDisplay(){
     ctx.fillStyle = 'white'
     ctx.font = `${inputTextSize * 2/3}px Trebuchet MS`
     ctx.fillText('Custom Quantity:', inputx + fontPadding, inputy - (fontPadding * 3), inputw - fontPadding)
-    if(active) ctx.fillStyle = '#999'
-    else ctx.fillStyle = '#1f1f1f'
+    ctx.fillStyle = active?'#999':'#1f1f1f'
     ctx.fillRect(inputx, inputy, inputw, inputh)
     if(quantity === ''){
         ctx.fillStyle = '#3f3f3f'
@@ -667,12 +665,7 @@ function plantCrop(Sland){
 function cursor(x, y){
     let w = h = (canvas.width > canvas.height)? canvas.height/30: canvas.width/30
     let img = document.createElement('img')
-    if(((selectedCrop!=null)? selectedCrop.qty : -1 > 0) && !market && !help){
-        img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/${selectedCrop.name}.png` 
-    }
-    else{
-        img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/Crosshair.png`
-    }
+    img.src = ((selectedCrop!=null)? selectedCrop.qty : -1 > 0) && !market && !help?`https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/${selectedCrop.name}.png`:img.src = `https://sdg-ebenezer.github.io/farm-game/Pictures/Cursor/Crosshair.png`
     ctx.drawImage(img, x - w/2, y - h/2, w, h)
 }
 function checkClick(x, y, w, h, mx, my){
@@ -795,15 +788,8 @@ canvas.onwheel = (e)=>{
     let scrollValue = (e.deltaY > 0)? -1 : 1
     
     if(history.length > 0){
-        if(history[0][1] >= 0){
-            hstyScrollable.up = false
-        }
-        else{hstyScrollable.up = true}
-        
-        if(history[history.length-1][1] <= 0){
-            hstyScrollable.down = false
-        }
-        else{hstyScrollable.down = true}
+        hstyScrollable.up = history[0][1] >= 0?false:true
+        hstyScrollable.down = history[history.length-1][1] <= 0?false:true
     }
     
     if(hsty){
